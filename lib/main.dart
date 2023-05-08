@@ -30,16 +30,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ImagePicker _picker = ImagePicker();
+  XFile? _image;
   @override
   void dispose() async {
     await Tflite.close();
   }
 
-  PickedFile? _image;
   bool _loading = false;
   List<dynamic>? _outputs;
   String? res;
-  classifyImage(image) async {
+  classifyImage(XFile image) async {
     res ??= await Tflite.loadModel(
         model: "assets/model_unquant.tflite",
         labels: "assets/labels.txt",
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         useGpuDelegate:
             false // defaults to false, set to true to use GPU delegate
         );
-    var output = await Tflite.runModelOnImage(
+    List? output = await Tflite.runModelOnImage(
       path: image.path,
       numResults: 2,
       threshold: 0.5,
@@ -95,20 +95,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future openCamera() async {
-    var image = await _picker.getImage(source: ImageSource.camera);
-
+    var image = await _picker.pickImage(source: ImageSource.camera);
+    if (image == null) return;
     setState(() {
       _image = image;
     });
+    classifyImage(image);
   }
 
   //camera method
   Future openGallery() async {
-    var piture = await _picker.getImage(source: ImageSource.gallery);
+    var picture = await _picker.pickImage(source: ImageSource.gallery);
+    if (picture == null) return;
     setState(() {
-      _image = piture;
+      _image = picture;
     });
-    classifyImage(piture);
+    classifyImage(picture);
   }
 
   @override
@@ -129,13 +131,18 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _image == null ? Container() : Image.file(File(_image!.path)),
+                  _image == null
+                      ? Container()
+                      : Image.file(
+                          File(_image!.path),
+                          width: 200,
+                        ),
                   SizedBox(
                     height: 20,
                   ),
                   _outputs != null
                       ? Text(
-                          '${_outputs![0]["label"]}',
+                          '${_outputs?[0]["label"]}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20.0,
