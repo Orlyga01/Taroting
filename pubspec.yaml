@@ -9,10 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod: ^2.3.6
   flutter_tflite: ^1.0.1
   image_picker: ^0.8.7+4
   meta: ^1.8.0
-
+  sharedor: 
+    path: ../sharedor
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
