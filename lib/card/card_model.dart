@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:sharedor/misc/model_class.dart';
 

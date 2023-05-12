@@ -35,11 +35,12 @@ class _HomePageState extends State<HomePage> {
     await Tflite.close();
   }
 
-  PickedFile? _image;
+  XFile? _image;
   bool _loading = false;
   List<dynamic>? _outputs;
   String? res;
   classifyImage(image) async {
+    if (image == null) return;
     res ??= await Tflite.loadModel(
         model: "assets/model_unquant.tflite",
         labels: "assets/labels.txt",
@@ -95,16 +96,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future openCamera() async {
-    var image = await _picker.getImage(source: ImageSource.camera);
+    var image = await _picker.pickImage(source: ImageSource.camera);
 
     setState(() {
       _image = image;
     });
+    classifyImage(image);
   }
 
   //camera method
   Future openGallery() async {
-    var piture = await _picker.getImage(source: ImageSource.gallery);
+    var piture = await _picker.pickImage(source: ImageSource.gallery);
     setState(() {
       _image = piture;
     });
