@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
@@ -155,4 +156,18 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  getAnswer() async {
+    String apiKey = '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';
+  
+final chatGpt = ChatGpt(apiKey: apiKey);
+final request = CompletionRequest(
+  messages: [Message( role:"system",content:"In hebrew. In tarot reading when I get the fool as the subject, what does it mean?")],
+  maxTokens: 4000,
+);
+final result = await chatGpt.createChatCompletion(request);
+
 }
+  }
+  
+
+
