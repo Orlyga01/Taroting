@@ -7,14 +7,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:taroting/keys.dart';
 import 'package:sharedor/helpers/global_parameters.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
+final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+  await Firebase.initializeApp();
   await GlobalParameters().setGlobalParameters({
     "language": Platform.localeName,
-    
   });
   runApp(const MainApp());
 }
@@ -24,11 +25,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Image Picker Demo',
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
+    return MaterialApp(
+        title: 'Let do Taroting',
+        debugShowCheckedModeBanner: false,
+        home: AnimatedSplashScreen(
+            backgroundColor: Colors.white,
+            duration: 2500,
+            splashIconSize: GlobalParameters().screenSize.height,
+            nextScreen: HomePage(),
+            splash: SizedBox.shrink()));
   }
 }
 
