@@ -16,7 +16,9 @@ migrate_working_dir/
 *.iws
 .idea/
 keys.dart
-
+*.lock
+generated_plugin_registrant*.*
+GeneratedPluginRegistrant*.*
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -31,7 +33,9 @@ keys.dart
 .packages
 .pub-cache/
 .pub/
+.vscode/
 /build/
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -43,3 +47,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+node_modules
+ios/Podfile.lock
+windows/flutter/*.*
