@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+// import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taroting/keys.dart';
 import 'package:sharedor/helpers/global_parameters.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:tflite/tflite.dart';import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
