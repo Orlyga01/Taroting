@@ -4,8 +4,18 @@ import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:taroting/keys.dart';
+import 'package:sharedor/helpers/global_parameters.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  await GlobalParameters().setGlobalParameters({
+    "language": Platform.localeName,
+    
+  });
   runApp(const MainApp());
 }
 
@@ -40,6 +50,7 @@ class _HomePageState extends State<HomePage> {
   bool _loading = false;
   List<dynamic>? _outputs;
   String? res;
+  String? _gptText;
   classifyImage(image) async {
     if (image == null) return;
     res ??= await Tflite.loadModel(
@@ -79,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                       "Take a Picture",
                       style: TextStyle(color: Colors.white, fontSize: 20.0),
                     ),
-                    onTap: openCamera,
+                    onTap: getAnswer,
                   ),
                   Padding(padding: EdgeInsets.all(10.0)),
                   GestureDetector(
@@ -133,6 +144,9 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _image == null ? Container() : Image.file(File(_image!.path)),
+                  Text(
+                    _gptText ?? "",
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -156,18 +170,19 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   getAnswer() async {
-    String apiKey = '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';
-  
-final chatGpt = ChatGpt(apiKey: apiKey);
-final request = CompletionRequest(
-  messages: [Message( role:"system",content:"In hebrew. In tarot reading when I get the fool as the subject, what does it mean?")],
-  maxTokens: 4000,
-);
-final result = await chatGpt.createChatCompletion(request);
-
-}
+    final chatGpt = ChatGpt(apiKey: chatgpt);
+    final request = CompletionRequest(messages: [
+      Message(
+          role: "system",
+          content:
+              "In hebrew. In tarot reading when I get the fool as the subject, what does it mean? Hebrew")
+    ], maxTokens: 4000, model: ChatGptModel.gpt35Turbo);
+    final AsyncCompletionResponse? result =
+        await chatGpt.createChatCompletion(request);
+    setState(() {
+      _gptText = result?.choices?.first.message?.content;
+    });
   }
-  
-
-
+}

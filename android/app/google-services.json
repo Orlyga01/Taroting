@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "256567282449",
+    "project_id": "menikot",
+    "storage_bucket": "menikot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:256567282449:android:a7b9826729554e7fb69ab0",
+        "android_client_info": {
+          "package_name": "com.example.taroting"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "256567282449-ocuhgkml03pv0ed6ak7sgiaen53hf4r3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ1hU5WKW9rF994ni5adZ4vq2W6JG-13U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "256567282449-ocuhgkml03pv0ed6ak7sgiaen53hf4r3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
