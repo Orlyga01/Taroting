@@ -18,7 +18,9 @@ class CardInterpretation extends ModelClass<CardInterpretation> {
     createdAt,
     modifiedAt,
   }) : super(id: id, createdAt: createdAt, modifiedAt: modifiedAt);
-
+  static String buildId(
+          String cardId, InterpretationType iType, String? language) =>
+      cardId + enumToString(iType.toString()) + (language ?? "en");
   static CardInterpretation get empty => CardInterpretation(
       cardId: '',
       interpretation: '',
@@ -53,7 +55,7 @@ class CardInterpretation extends ModelClass<CardInterpretation> {
   @override
   Map<String, dynamic> toJson() {
     final data = super.toJson();
-    data['id'] = cardId + enumToString(interpretationType.toString())+(language??"");
+    data['id'] = buildId(cardId, interpretationType, language);
     data['cardId'] = cardId;
     data['language'] = language;
     data['interpretation'] = interpretation;

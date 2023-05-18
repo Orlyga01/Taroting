@@ -7,21 +7,15 @@ import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 
 class InterpretationRepository {
-  late String cardInterpretationid;
   late CollectionReference _cardInterpretationCollection;
   // ignore: unused_field
   late DocumentReference? _dbTaskList;
   static final InterpretationRepository _dbTaskListRep =
       InterpretationRepository._internal();
   InterpretationRepository._internal();
-  factory InterpretationRepository({required String cardInterpretationid}) {
+  factory InterpretationRepository() {
     _dbTaskListRep._cardInterpretationCollection =
         FirebaseFirestore.instance.collection("interpretations");
-    _dbTaskListRep.cardInterpretationid = cardInterpretationid;
-    if (!cardInterpretationid.isEmptyBe) {
-      _dbTaskListRep._dbTaskList = _dbTaskListRep._cardInterpretationCollection
-          .doc(cardInterpretationid);
-    }
     return _dbTaskListRep;
   }
   Future<CardInterpretation?> add(CardInterpretation cardInterpretation) async {

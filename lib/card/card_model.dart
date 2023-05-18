@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:sharedor/misc/model_class.dart';
 
-class Card extends ModelClass<Card> {
+class TCard extends ModelClass<TCard> {
   String name;
   String img;
   String arcana;
@@ -11,7 +11,7 @@ class Card extends ModelClass<Card> {
   Suit suit;
   String number;
 
-  Card({
+  TCard({
     id,
     required this.number,
     required this.clasificationClass,
@@ -23,7 +23,7 @@ class Card extends ModelClass<Card> {
     modifiedAt,
   }) : super(id: id, createdAt: createdAt, modifiedAt: modifiedAt);
 
-  static Card get empty => Card(
+  static TCard get empty => TCard(
         number: '',
         name: '',
         arcana: '',
@@ -33,7 +33,7 @@ class Card extends ModelClass<Card> {
       );
 
   @override
-  Card.fromJson(Map<String, dynamic> mjson)
+  TCard.fromJson(Map<String, dynamic> mjson)
       : name = '',
         number = '',
         arcana = '',
@@ -48,13 +48,13 @@ class Card extends ModelClass<Card> {
     suit = enumFromString(mjson['suit'], Suit.values) ?? Suit.cups;
   }
 
-  factory Card.fromJ(Map<String, dynamic> mjson) {
-    return Card.fromJson(mjson);
+  factory TCard.fromJ(Map<String, dynamic> mjson) {
+    return TCard.fromJson(mjson);
   }
 
-  List<Card>? listFromJson(List<dynamic>? list) {
+  List<TCard>? listFromJson(List<dynamic>? list) {
     return (list != null && list.isNotEmpty)
-        ? list.map((task) => Card.fromJson(task)).toList()
+        ? list.map((task) => TCard.fromJson(task)).toList()
         : null;
   }
 }

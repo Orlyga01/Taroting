@@ -1,52 +1,41 @@
-// import 'dart:async';
+import 'dart:async';
 
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:taroting/card/card_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:taroting/card/card_model.dart';
+import 'package:taroting/card/card_repository.dart';
+import 'package:tflite/tflite.dart';
 
-// class CardController {
-//   static final CardController _cardC = CardController._internal();
-//   // FirebaseMeetingRepository _meetingRepository = FirebaseMeetingRepository();
+class TCardController {
+  late String cardid;
+  static final TCardController _cardC = TCardController._internal();
+  TCardController._internal();
+  factory TCardController() {
+    return _cardC;
+  }
 
-//   CardController._internal();
-//   factory CardController() {
-//     return _cardC;
-//   }
-//   final listCard = StreamController<List<Card>>();
-//   Stream<List<Card>> get getCards => listCard.stream;
-//   List<Card> _list = Card.getBasicCardList();
-
-//   void setCurrentCardList(List<Card> list) {
-//     _list = list;
-//     listCard.add(_list);
-//   }
-
-//   // Future<void> saveCard() async {
-//   //   final menu = locator.get<UserListController>().menu;
-//   //   try {
-//   //     locator.get<FamilyController>().updateFamily(
-//   //         fieldName: "menuJson", fieldValue: Card.toJson(menu));
-//   //   } catch (e) {
-//   //     rethrow;
-//   //   }
-//   // }
-
-//   void dispose() {
-//     listCard.close();
-//   }
-
-//   Future<void> updateCards(List<Card> list) async {
-//     //Do update menu then sink
-//     // we want that new or recently updated would always be the first in the list
-//     _list = list;
-//     listCard.sink.add(_list);
-//   }
-
-//   // Card getCardById(String cardId) {
-//   //   return BeUserController()
-//   //       .user
-//   //       .cards
-//   //       .firstWhere((element) => element.id == cardId);
-//   // }
-
-  
-// }
+  Future<TCard?> identifyTCard(XFile? image) async {
+    if (image == null) return null;
+    String? res = await Tflite.loadModel(
+        model: "assets/model_unquant.tflite",
+        labels: "assets/labels.txt",
+        numThreads: 1, // defaults to 1
+        isAsset:
+            true, // defaults to true, set to false to load resources outside assets
+        useGpuDelegate:
+            false // defaults to false, set to true to use GPU delegate
+        );
+    var output = await Tflite.runModelOnImage(
+      path: image.path,
+      numResults: 2,
+      threshold: 0.5,
+      imageMean: 127.5,
+      imageStd: 127.5,
+    );
+    if (output != null && output[0].confidence > 0.8) {
+      return FirebaseTCardsRepository().get(output[0].label);
+    } else {
+      throw ("not found");
+    }
+  }
+}

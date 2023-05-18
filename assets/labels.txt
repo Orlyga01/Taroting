@@ -1,4 +1,4 @@
-0 The Fool
-1 Ace Cups
-2 2Cups
-3 Class 4
+0 Trump0
+1 Cups1
+2 Cups2
+3 Cups13
