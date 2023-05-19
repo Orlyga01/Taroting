@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
-import 'package:tflite/tflite.dart';
+// import 'package:tflite/tflite.dart';
 
 class TCardController {
   late String cardid;
@@ -13,6 +14,7 @@ class TCardController {
   factory TCardController() {
     return _cardC;
   }
+
 
   Future<TCard?> identifyTCard(XFile? image) async {
     if (image == null) return null;

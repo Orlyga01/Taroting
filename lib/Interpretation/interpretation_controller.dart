@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharedor/common_functions.dart';
-import 'package:sharedor/helpers/global_parameters.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_repository.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/keys.dart';
 
 class InterpretationController {
@@ -27,7 +27,7 @@ class InterpretationController {
           Message(
               role: "system",
               content:
-                  "In tarot reading when I get ${card.name} as the ${enumToString(iType.toString())}, what does it mean? ${GlobalParameters().languageName}")
+                  "In tarot reading when I get ${card.name} as the ${enumToString(iType.toString())}, what does it mean? ${GlobalParametersTar().languageName}")
         ], maxTokens: 4000, model: ChatGptModel.gpt35Turbo);
         final AsyncCompletionResponse? result =
             await chatGpt.createChatCompletion(request);
@@ -49,8 +49,8 @@ class InterpretationController {
   ) async {
     String id = card.id +
         enumToString(iType.toString()) +
-        (GlobalParameters().language);
+        (GlobalParametersTar().language);
     return InterpretationRepository().get(CardInterpretation.buildId(
-        card.id, iType, GlobalParameters().language));
+        card.id, iType, GlobalParametersTar().language));
   }
 }

@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "256567282449",
-    "project_id": "menikot",
-    "storage_bucket": "menikot.appspot.com"
+    "project_number": "332126803247",
+    "project_id": "taroting-78a04",
+    "storage_bucket": "taroting-78a04.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:256567282449:android:a7b9826729554e7fb69ab0",
+        "mobilesdk_app_id": "1:332126803247:android:255adae33c39d65fb37dda",
         "android_client_info": {
           "package_name": "com.example.taroting"
         }
       },
       "oauth_client": [
         {
-          "client_id": "256567282449-ocuhgkml03pv0ed6ak7sgiaen53hf4r3.apps.googleusercontent.com",
+          "client_id": "332126803247-0ueuuol6tjnl8f6d7g0kt9nq39qni9fd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBJ1hU5WKW9rF994ni5adZ4vq2W6JG-13U"
+          "current_key": "AIzaSyCHi9XhApfhMy68zRrMtyORfcO0WCbdhyM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "256567282449-ocuhgkml03pv0ed6ak7sgiaen53hf4r3.apps.googleusercontent.com",
+              "client_id": "332126803247-0ueuuol6tjnl8f6d7g0kt9nq39qni9fd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "332126803247-onr9ss6eigia1iv1s87sa8if8ok7eai2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taroting"
+              }
             }
           ]
         }

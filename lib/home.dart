@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
-import 'package:tflite/tflite.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -16,21 +15,24 @@ class _HomePageState extends State<HomePage> {
   final ImagePicker _picker = ImagePicker();
 
   @override
-  void dispose() async {
-    await Tflite.close();
-  }
+ 
 
-  XFile? _image;
   bool _loading = false;
   List<dynamic>? _outputs;
   String? res;
   String? _gptText;
   classifyImage(image) async {
+    setState(() {
+      _loading = true;
+    });
+
     if (image == null) return;
 
     try {
       widget.card = await TCardController().identifyTCard(image);
-      setState(() {});
+      setState(() {
+        _loading = false;
+      });
     } catch (e) {
       if (e == "not found") {}
     }
@@ -69,19 +71,13 @@ class _HomePageState extends State<HomePage> {
 
   Future openCamera() async {
     var image = await _picker.pickImage(source: ImageSource.camera);
-
-    setState(() {
-      _image = image;
-    });
     classifyImage(image);
   }
 
   //camera method
   Future openGallery() async {
     var piture = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = piture;
-    });
+
     classifyImage(piture);
   }
 
