@@ -53,6 +53,24 @@ class InterpretationRepository {
     }
   }
 
+  Future<List<CardInterpretation>?> getAllByCard(
+      String cardid, String language) async {
+    try {
+      return await _cardInterpretationCollection
+          .where('cardid', isEqualTo: cardid)
+          .where('language', isEqualTo: language)
+          .get()
+          .then((snapshot) {
+        return snapshot.docs
+            .map((doc) =>
+                CardInterpretation.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> update(String? id,
       [CardInterpretation? cardInterpretation,
       String? fieldName,

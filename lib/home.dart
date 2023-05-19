@@ -15,8 +15,6 @@ class _HomePageState extends State<HomePage> {
   final ImagePicker _picker = ImagePicker();
 
   @override
- 
-
   bool _loading = false;
   List<dynamic>? _outputs;
   String? res;
@@ -70,8 +68,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future openCamera() async {
-    var image = await _picker.pickImage(source: ImageSource.camera);
-    classifyImage(image);
+    // var image = await _picker.pickImage(source: ImageSource.camera);
+    TCard? card = await TCardController().getCard("Pentacles1");
+    Navigator.pushNamed(context, "interpretation", arguments: {"card": card});
+    //classifyImage(image);
   }
 
   //camera method

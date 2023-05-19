@@ -53,4 +53,11 @@ class InterpretationController {
     return InterpretationRepository().get(CardInterpretation.buildId(
         card.id, iType, GlobalParametersTar().language));
   }
+
+  Future<List<CardInterpretation>?> getAllCardInterpretation({
+    required TCard card,
+  }) async {
+    return InterpretationRepository()
+        .getAllByCard(card.id, GlobalParametersTar().language);
+  }
 }
