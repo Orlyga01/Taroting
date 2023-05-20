@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'firebase_options.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'helpers/route.dart';
 import 'home.dart';
@@ -18,7 +19,7 @@ Future<void> main() async {
   await GlobalParametersTar().setGlobalParameters({
     "language": Platform.localeName,
   });
-  runApp(const MainApp());
+  runApp(ProviderScope(child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {

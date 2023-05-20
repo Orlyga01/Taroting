@@ -4,42 +4,43 @@ import 'package:sharedor/common_functions.dart';
 import 'package:sharedor/misc/model_class.dart';
 
 class CardInterpretation extends ModelClass<CardInterpretation> {
-  String cardId;
+  String cardid;
   InterpretationType interpretationType;
   String interpretation;
   String? language;
 
   CardInterpretation({
-    id,
-    required this.cardId,
+    id = "",
+    required this.cardid,
     required this.interpretation,
     this.language,
     required this.interpretationType,
     createdAt,
     modifiedAt,
-  }) : super(id: id, createdAt: createdAt, modifiedAt: modifiedAt);
+  }) : super(createdAt: createdAt, modifiedAt: modifiedAt);
+  String buildIdInter() => buildId(cardid, interpretationType, language);
   static String buildId(
-          String cardId, InterpretationType iType, String? language) =>
-      cardId + enumToString(iType.toString()) + (language ?? "en");
+          String cardid, InterpretationType iType, String? language) =>
+      cardid + enumToString(iType.toString()) + (language ?? "en");
   static CardInterpretation get empty => CardInterpretation(
-      cardId: '',
+      cardid: '',
       interpretation: '',
       language: '',
       interpretationType: InterpretationType.subject);
 
   @override
   CardInterpretation.fromJson(Map<String, dynamic> mjson)
-      : cardId = '',
+      : cardid = '',
         interpretation = '',
         language = '',
         interpretationType = InterpretationType.subject {
     super.fromJson(mjson);
-    cardId = mjson['cardId'];
+    cardid = mjson['cardid'];
     interpretation = mjson['interpretation'];
     language = mjson['language'];
-    interpretationType =
-        enumFromString(mjson['suit'], InterpretationType.values) ??
-            InterpretationType.subject;
+    interpretationType = enumFromString(
+            mjson['interpretationType'], InterpretationType.values) ??
+        InterpretationType.subject;
   }
 
   factory CardInterpretation.fromJ(Map<String, dynamic> mjson) {
@@ -55,8 +56,8 @@ class CardInterpretation extends ModelClass<CardInterpretation> {
   @override
   Map<String, dynamic> toJson() {
     final data = super.toJson();
-    data['id'] = buildId(cardId, interpretationType, language);
-    data['cardId'] = cardId;
+    data['id'] = buildId(cardid, interpretationType, language);
+    data['cardid'] = cardid;
     data['language'] = language;
     data['interpretation'] = interpretation;
     data['interpretationType'] = enumToString(interpretationType.toString());

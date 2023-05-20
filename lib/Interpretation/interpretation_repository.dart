@@ -22,7 +22,7 @@ class InterpretationRepository {
     // the cardInterpretation id will be the phone number
     try {
       await _cardInterpretationCollection
-          .doc(cardInterpretation.id)
+          .doc(cardInterpretation.buildIdInter())
           .set(cardInterpretation.toJson());
 
       return cardInterpretation;
