@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_repository.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
+import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/keys.dart';
 
 class InterpretationController {
@@ -17,8 +19,9 @@ class InterpretationController {
     _interC.cardid = cardid;
     return _interC;
   }
-  Future<String?> getAnswer(TCard card, InterpretationType iType) async {
-    CardInterpretation? answer;
+  Future<String?> getAnswer(
+      TCard card, InterpretationType iType, BuildContext context) async {
+    String? answer;
     try {
       answer = await getInterpretationFromDB(card, iType);
       if (answer == null) {
@@ -37,19 +40,20 @@ class InterpretationController {
               interpretation: result.choices!.first.message!.content,
               interpretationType: iType));
         }
+        final container = ProviderContainer();
+
+        container.read(watchForAnser).setNotifyCardStatusChange(answer);
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<CardInterpretation?> getInterpretationFromDB(
+  String? getInterpretationFromCard(
     TCard card,
     InterpretationType iType,
-  ) async {
-    String id = card.id +
-        enumToString(iType.toString()) +
-        (GlobalParametersTar().language);
+  )  {
+   return card.interpretations[TCard.buil]
     return InterpretationRepository().get(CardInterpretation.buildId(
         card.id, iType, GlobalParametersTar().language));
   }

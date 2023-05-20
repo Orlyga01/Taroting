@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
 
   Future openCamera() async {
     // var image = await _picker.pickImage(source: ImageSource.camera);
-    TCard? card = await TCardController().getCard("Pentacles1");
+    TCard? card = await TCardController().getCard("Pentacles1", );
     Navigator.pushNamed(context, "interpretation", arguments: {"card": card});
     //classifyImage(image);
   }
@@ -83,6 +84,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Image Classification'),

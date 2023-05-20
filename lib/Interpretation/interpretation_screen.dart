@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:taroting/Interpretation/interpretation_controller.dart';
+import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_widget.dart';
+import 'package:taroting/helpers/providers.dart';
+
 
 class InterpretationScreen extends StatelessWidget {
   TCard card;
-  InterpretationScreen({required this.card, Key? key});
+  InterpretationType iType = InterpretationType.subject;
+  InterpretationScreen({super.key, required this.card});
 
   @override
   Widget build(BuildContext context) {
@@ -51,22 +57,23 @@ class InterpretationScreen extends StatelessWidget {
               SizedBox(
                   height:
                       16), // Adjust the spacing between the image and the content below
-              Container(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'More Information',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                     Consumer(builder: (consumercontext, WidgetRef ref, child) {
+        String answer = ref.watch(watchForAnser).getAnswer;
+
+                  return Container(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          answer
+                        ),
+                        SizedBox(height: 8),
+                        // Add more widgets to display additional information
+                      ],
                     ),
-                    SizedBox(height: 8),
-                    // Add more widgets to display additional information
-                  ],
-                ),
+                  );
+                }
               ),
             ],
           ),
