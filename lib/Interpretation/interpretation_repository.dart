@@ -22,7 +22,7 @@ class InterpretationRepository {
     // the cardInterpretation id will be the phone number
     try {
       await _cardInterpretationCollection
-          .doc(cardInterpretation.id)
+          .doc(cardInterpretation.buildIdInter())
           .set(cardInterpretation.toJson());
 
       return cardInterpretation;
@@ -48,6 +48,24 @@ class InterpretationRepository {
         return CardInterpretation.fromJson(data);
       }
       return null;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<CardInterpretation>?> getAllByCard(
+      String cardid, String language) async {
+    try {
+      return await _cardInterpretationCollection
+          .where('cardid', isEqualTo: cardid)
+          .where('language', isEqualTo: language)
+          .get()
+          .then((snapshot) {
+        return snapshot.docs
+            .map((doc) =>
+                CardInterpretation.fromJson(doc.data() as Map<String, dynamic>))
+            .toList();
+      });
     } catch (e) {
       rethrow;
     }

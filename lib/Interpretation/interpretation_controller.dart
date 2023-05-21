@@ -1,15 +1,19 @@
 import 'dart:async';
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_repository.dart';
+import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
+import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/keys.dart';
 
 class InterpretationController {
   late String? cardid;
+  String? _answer;
   static final InterpretationController _interC =
       InterpretationController._internal();
   InterpretationController._internal();
@@ -17,11 +21,16 @@ class InterpretationController {
     _interC.cardid = cardid;
     return _interC;
   }
-  Future<String?> getAnswer(TCard card, InterpretationType iType) async {
-    CardInterpretation? answer;
-    try {
-      answer = await getInterpretationFromDB(card, iType);
-      if (answer == null) {
+  get answer => _answer;
+  Future<void> getAnswer(TCard card, InterpretationType iType) async {
+    String answer = "";
+
+    CardInterpretation? savedAnswer = getInterpretationFromCard(card, iType);
+
+    if (savedAnswer != null) {
+      answer = savedAnswer.interpretation;
+    } else {
+      try {
         final chatGpt = ChatGpt(apiKey: chatgpt);
         final request = CompletionRequest(messages: [
           Message(
@@ -32,25 +41,38 @@ class InterpretationController {
         final AsyncCompletionResponse? result =
             await chatGpt.createChatCompletion(request);
         if (result != null && result.choices?.first.message?.content != null) {
-          InterpretationRepository().add(CardInterpretation(
-              cardId: card.id,
+          CardInterpretation ci = CardInterpretation(
+              cardid: card.id,
               interpretation: result.choices!.first.message!.content,
-              interpretationType: iType));
+              interpretationType: iType,
+              language: GlobalParametersTar().language);
+          InterpretationRepository().add(ci);
+          TCardController().addNewInterpretations = ci;
+          answer = ci.interpretation;
         }
+      } catch (e) {
+        rethrow;
       }
-    } catch (e) {
-      rethrow;
     }
+    final container = ProviderContainer();
+
+    container.read(watchForAnser.notifier).setNotifyCardStatusChange(answer);
+    _answer = answer;
   }
 
-  Future<CardInterpretation?> getInterpretationFromDB(
+  CardInterpretation? getInterpretationFromCard(
     TCard card,
     InterpretationType iType,
-  ) async {
-    String id = card.id +
-        enumToString(iType.toString()) +
-        (GlobalParametersTar().language);
-    return InterpretationRepository().get(CardInterpretation.buildId(
-        card.id, iType, GlobalParametersTar().language));
+  ) {
+    String interId = CardInterpretation.buildId(
+        card.id, iType, GlobalParametersTar().language);
+    return card.interpretations[interId];
+  }
+
+  Future<List<CardInterpretation>?> getAllCardInterpretation({
+    required TCard card,
+  }) async {
+    return InterpretationRepository()
+        .getAllByCard(card.id, GlobalParametersTar().language);
   }
 }

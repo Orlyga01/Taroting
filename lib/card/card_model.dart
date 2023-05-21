@@ -2,35 +2,29 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:sharedor/misc/model_class.dart';
+import 'package:taroting/Interpretation/interpretation_model.dart';
 
-class TCard extends ModelClass<TCard> {
+class TCard {
   String name;
   String img;
   String arcana;
-  String clasificationClass;
   Suit suit;
   String number;
-
+  String id;
+  late Map<String, CardInterpretation> interpretations; //added
   TCard({
-    id,
+    required this.id,
     required this.number,
-    required this.clasificationClass,
     required this.name,
     required this.img,
     required this.arcana,
     required this.suit,
     createdAt,
     modifiedAt,
-  }) : super(id: id, createdAt: createdAt, modifiedAt: modifiedAt);
+  });
 
-  static TCard get empty => TCard(
-        number: '',
-        name: '',
-        arcana: '',
-        suit: Suit.cups,
-        clasificationClass: '',
-        img: '',
-      );
+  static TCard get empty =>
+      TCard(number: '', name: '', arcana: '', suit: Suit.cups, img: '', id: '');
 
   @override
   TCard.fromJson(Map<String, dynamic> mjson)
@@ -39,10 +33,10 @@ class TCard extends ModelClass<TCard> {
         arcana = '',
         suit = Suit.cups,
         img = '',
-        clasificationClass = '' {
-    super.fromJson(mjson);
+        id = '' {
+    id = mjson['id'];
     name = mjson['name'];
-    clasificationClass = mjson['clasificationClass'];
+
     img = mjson['img'];
     arcana = mjson['arcana'];
     suit = enumFromString(mjson['suit'], Suit.values) ?? Suit.cups;

@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'firebase_options.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'helpers/route.dart';
 import 'home.dart';
 
 final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
@@ -18,7 +20,7 @@ Future<void> main() async {
   await GlobalParametersTar().setGlobalParameters({
     "language": Platform.localeName,
   });
-  runApp(const MainApp());
+  runApp(ProviderScope(child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -27,8 +29,10 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Let do Taroting',
+        title: 'Lets do Taroting',
         debugShowCheckedModeBanner: false,
+        onGenerateRoute: BeRouter.generateRoute,
+
         //         theme: CustomTheme(context).beMemberTheme,
 
         home: AnimatedSplashScreen(
