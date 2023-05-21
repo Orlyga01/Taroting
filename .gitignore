@@ -53,3 +53,5 @@ windows/flutter/generated_plugins.cmake
 node_modules
 ios/Podfile.lock
 windows/flutter/*.*
+ios/Podfile.lock
+.gitignore
