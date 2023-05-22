@@ -31,6 +31,7 @@ class MainApp extends StatelessWidget {
         title: 'Lets do Taroting',
         debugShowCheckedModeBanner: false,
         onGenerateRoute: BeRouter.generateRoute,
+        theme: ThemeData(fontFamily: 'MartelSans'),
 
         //         theme: CustomTheme(context).beMemberTheme,
 

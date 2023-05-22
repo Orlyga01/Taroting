@@ -27,10 +27,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: MartelSans
+      fonts: 
+      - asset: assets/fonts/MartelSans-Regular.ttf
   assets:
     - assets/labels.txt
     - assets/model_unquant.tflite
     - assets/cards/
 dependency_overrides:
   firebase_core_platform_interface: 4.5.1
+
  

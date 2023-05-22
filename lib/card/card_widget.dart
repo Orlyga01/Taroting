@@ -11,21 +11,37 @@ class CardWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                width: double.infinity,
-                height: 200, // Adjust the height according to your image size
-                child: Image.asset(
-                  'assets/cards/${card.img}', // Replace with your image path
-                  fit: BoxFit.cover,
-                ),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 200),
+              // width: double.infinity,
+              // height: 200, // Adjust the height according to your image size
+              child: Image.asset(
+                'assets/cards/${card.img}', // Replace with your image path
+                fit: BoxFit.contain,
               ),
             ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(card.name,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      Text(card.arcana)
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
-        Text(card.arcana)
       ],
     );
   }
