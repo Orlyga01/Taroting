@@ -14,6 +14,7 @@ final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
+    name: "devproject",
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GlobalParametersTar().setGlobalParameters({
