@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,16 +49,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBJpNi8R0kxcpWgTgYIdR2iwOMX4c0vgyk',
-    appId: '1:332126803247:web:f8978c52df8545d5b37dda',
-    messagingSenderId: '332126803247',
-    projectId: 'taroting-78a04',
-    authDomain: 'taroting-78a04.firebaseapp.com',
-    storageBucket: 'taroting-78a04.appspot.com',
-    measurementId: 'G-WKHKB3THED',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCHi9XhApfhMy68zRrMtyORfcO0WCbdhyM',
     appId: '1:332126803247:android:255adae33c39d65fb37dda',
@@ -69,15 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'taroting-78a04.appspot.com',
     iosClientId: '332126803247-onr9ss6eigia1iv1s87sa8if8ok7eai2.apps.googleusercontent.com',
     iosBundleId: 'com.taroting',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyD-0TWi10X5wBgkCZPfXT2aXIjZihWrPu4',
-    appId: '1:332126803247:ios:d19a5a1dfe0d7db3b37dda',
-    messagingSenderId: '332126803247',
-    projectId: 'taroting-78a04',
-    storageBucket: 'taroting-78a04.appspot.com',
-    iosClientId: '332126803247-s9da96arc3lvvmvbla3ksqvdu7qgbbqb.apps.googleusercontent.com',
-    iosBundleId: 'com.example.taroting',
   );
 }

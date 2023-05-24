@@ -34,7 +34,11 @@ class CardWidget extends StatelessWidget {
                         child: Text(card.name,
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
-                      Text(card.arcana)
+                      Text(card.arcana),
+                      Text(
+                        "A",
+                        style: TextStyle(fontFamily: "ZodiacSigns"),
+                      )
                     ],
                   ),
                 ),

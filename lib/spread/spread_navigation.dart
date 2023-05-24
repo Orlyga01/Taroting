@@ -5,7 +5,9 @@ import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SpreadNavigation extends StatelessWidget {
   InterpretationType iType;
@@ -21,19 +23,31 @@ class SpreadNavigation extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(spread.results!.length, (index) {
               bool isCurrent = spread.results!.keys.elementAt(index) == iType;
-              bool full = spread.results![spread.results!.keys.elementAt(index)]!
-                                  .card.id.isNotEmpty;
+              bool full = spread
+                  .results![spread.results!.keys.elementAt(index)]!
+                  .card
+                  .id
+                  .isNotEmpty;
               return ElevatedButton(
                   onPressed: () async {
                     if (isCurrent) return;
-                    if(full) context.read(interpretationTypeChanged).
-                    var image =
-                        await _picker.pickImage(source: ImageSource.camera);
-                    TCard? card = await TCardController().identifyTCard(image);
-                    if (card != null) {
-                      InterpretationController().getAnswer(
-                          card, spread.results!.keys.elementAt(index));
+                    if (!full) {
+                      //If we dont have the answer yet
+
+                      var image =
+                          await _picker.pickImage(source: ImageSource.camera);
+                      TCard? card =
+                          await TCardController().identifyTCard(image);
+                      if (card != null) {
+                        InterpretationController().getAnswer(
+                            card, spread.results!.keys.elementAt(index));
+                      }
                     }
+                    final container = ProviderContainer();
+
+                    container
+                        .read(switchInterpretationType.notifier)
+                        .switchInterpretationType(iType);
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor:
@@ -44,8 +58,7 @@ class SpreadNavigation extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      full &&
-                              !isCurrent
+                      full && !isCurrent
                           ? const Padding(
                               padding: EdgeInsets.only(bottom: 8.0),
                               child: Icon(Icons.check,
@@ -53,10 +66,9 @@ class SpreadNavigation extends StatelessWidget {
                             )
                           : const SizedBox.shrink(),
                       Text(
-                        enumToString(spread.results!.keys
-                                .elementAt(index)
-                                .toString())
-                            .capitalize(),
+                        enumToString(
+                            spread.results!.keys.elementAt(index).toString()),
+                        // .capitalize(),
                         style: TextStyle(color: Colors.black),
                       ),
                     ],
