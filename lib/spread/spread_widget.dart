@@ -20,14 +20,17 @@ class _SpreadWidgetState extends State<SpreadWidget> {
         widget.spread.results ?? {};
     return ListView.builder(
         itemCount: results.length,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           InterpretationType iType = results.keys.toList()[index];
-          TCard card = results[index]!.card;
-          String inter = results[index]!.inter;
-          return ExpandableTile(
-              title: enumToString(iType.toString()),
-              image: card.img,
-              description: inter);
+          TCard card = results[iType]!.card;
+          String inter = results[iType]!.inter;
+          return card.id.isNotEmpty
+              ? ExpandableTile(
+                  title: enumToString(iType.toString()),
+                  image: card.img,
+                  description: inter)
+              : SizedBox.shrink();
         });
   }
 }
@@ -64,14 +67,27 @@ class _ExpandableTileState extends State<ExpandableTile> {
         ),
         AnimatedContainer(
           duration: Duration(milliseconds: 300),
-          height: isExpanded ? 100 : 0,
+          height: isExpanded ? 300 : 50,
           child: Stack(
             children: [
-              Positioned.fill(
-                child: Image.asset(
-                  widget.image,
-                  fit: BoxFit.cover,
-                ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 100,
+                    child: Image.asset(
+                      'assets/cards/${widget.image}',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  Expanded(
+                      child: Text(
+                    widget.description,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                  ))
+                ],
               ),
               if (!isExpanded)
                 Positioned.fill(
@@ -80,8 +96,8 @@ class _ExpandableTileState extends State<ExpandableTile> {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.7),
+                          Colors.white.withOpacity(0.0),
+                          Colors.white,
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -90,20 +106,6 @@ class _ExpandableTileState extends State<ExpandableTile> {
                     ),
                   ),
                 ),
-              Positioned.fill(
-                bottom: 8.0,
-                right: 8.0,
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    widget.description,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

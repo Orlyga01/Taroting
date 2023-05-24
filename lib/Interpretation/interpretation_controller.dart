@@ -14,6 +14,7 @@ import 'package:taroting/keys.dart';
 class InterpretationController {
   late String? cardid;
   String? _answer;
+  InterpretationType? _iType;
   static final InterpretationController _interC =
       InterpretationController._internal();
   InterpretationController._internal();
@@ -22,6 +23,7 @@ class InterpretationController {
     return _interC;
   }
   get answer => _answer;
+  get iType => _iType;
   Future<void> getAnswer(TCard card, InterpretationType iType) async {
     String answer = "";
 
@@ -58,6 +60,7 @@ class InterpretationController {
 
     container.read(watchForAnser.notifier).setNotifyCardStatusChange(answer);
     _answer = answer;
+    _iType = iType;
   }
 
   CardInterpretation? getInterpretationFromCard(

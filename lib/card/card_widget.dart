@@ -14,7 +14,7 @@ class CardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 200),
+              constraints: BoxConstraints(maxHeight: 100),
               // width: double.infinity,
               // height: 200, // Adjust the height according to your image size
               child: Image.asset(

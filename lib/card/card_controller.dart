@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
@@ -57,12 +58,14 @@ class TCardController {
     List<CardInterpretation>? list = await InterpretationController()
         .getAllCardInterpretation(card: currentCard);
     if (list != null) {
-      card.interpretations = {for (CardInterpretation v in list) v.id: v};
+      card.interpretations = {
+        for (CardInterpretation v in list) v.interpretationType: v
+      };
     }
   }
 
   set addNewInterpretations(CardInterpretation inter) =>
-      card.interpretations[inter.id] = inter;
+      card.interpretations[inter.interpretationType] = inter;
 
   TCard get card => currentCard;
 }

@@ -11,7 +11,7 @@ class TCard {
   Suit suit;
   String number;
   String id;
-  late Map<String, CardInterpretation> interpretations; //added
+  late Map<InterpretationType, CardInterpretation> interpretations; //added
   TCard({
     required this.id,
     required this.number,
