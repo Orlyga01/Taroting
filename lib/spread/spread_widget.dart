@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:sharedor/common_functions.dart';
 
-class SpreadWidget extends StatefulWidget {
+class SpreadWidget extends ConsumerWidget {
   SpreadModel spread;
 
   SpreadWidget(this.spread, {super.key});
 
   @override
-  State<SpreadWidget> createState() => _SpreadWidgetState();
-}
-
-class _SpreadWidgetState extends State<SpreadWidget> {
-  @override
-  Widget build(BuildContext context) {
-    Map<InterpretationType, SpreadResultModel>? results =
-        widget.spread.results ?? {};
+  Widget build(BuildContext context, ref) {
+    spread = ref.watch(watchSpreadChange).getSpread;
+    Map<InterpretationType, TCard>? results = spread.results ?? {};
     return ListView.builder(
         itemCount: results.length,
         shrinkWrap: true,
         itemBuilder: (context, index) {
           InterpretationType iType = results.keys.toList()[index];
-          TCard card = results[iType]!.card;
-          String inter = results[iType]!.inter;
+          TCard card = results[iType]!;
+          String? inter = results[iType]!.getInterByType(iType);
           return card.id.isNotEmpty
               ? ExpandableTile(
                   title: enumToString(iType.toString()),
                   image: card.img,
-                  description: inter)
+                  description: inter ?? "loading")
               : SizedBox.shrink();
         });
   }

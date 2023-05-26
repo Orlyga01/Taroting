@@ -3,36 +3,25 @@ import 'package:taroting/card/card_model.dart';
 
 class SpreadModel {
   SpreadType type;
-  Map<InterpretationType, SpreadResultModel>? results;
+  Map<InterpretationType, TCard>? results;
 
   SpreadModel({required this.type, this.results});
   static SpreadModel get init => SpreadModel(type: SpreadType.ppf, results: {
-        InterpretationType.subject: SpreadResultModel(
-          "",
-          TCard.empty,
-        ),
-        InterpretationType.past: SpreadResultModel(
-          "",
-          TCard.empty,
-        ),
-        InterpretationType.present: SpreadResultModel(
-          "",
-          TCard.empty,
-        ),
-        InterpretationType.future: SpreadResultModel(
-          "",
-          TCard.empty,
-        )
+        InterpretationType.subject: TCard.empty,
+        InterpretationType.past: TCard.empty,
+        InterpretationType.present: TCard.empty,
+        InterpretationType.future: TCard.empty,
       });
 
   void setResult(InterpretationType iType, String inter, TCard card) =>
-      results![iType] = SpreadResultModel(inter, card);
+      results![iType] = card;
+
+  List<String>? getCardIds() {
+    if (results == null) return null;
+    List<String> list = [];
+    results!.forEach((key, value) => list.add(value.id));
+    return list;
+  }
 }
 
 enum SpreadType { ppf }
-
-class SpreadResultModel {
-  String inter;
-  TCard card;
-  SpreadResultModel(this.inter, this.card);
-}

@@ -9,45 +9,51 @@ import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SpreadNavigation extends StatelessWidget {
-  InterpretationType iType;
+class SpreadNavigation extends ConsumerStatefulWidget {
   SpreadModel spread;
+  InterpretationType? iType;
+
   SpreadNavigation(this.spread, this.iType, {super.key});
+
+  @override
+  ConsumerState<SpreadNavigation> createState() => _SpreadNavigationState();
+}
+
+class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
   final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
+    // String? answer = ref.watch(watchForAnser);
+    // if (answer != null && answer.length > 0) {
+    //   widget.spread
+    //       .setResult(widget.iType!, answer, TCardController().currentCard!);
+    //   ref.read(watchSpreadChange).setSpread = widget.spread;
+    // }
     return Column(
       children: [
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(spread.results!.length, (index) {
-              bool isCurrent = spread.results!.keys.elementAt(index) == iType;
-              bool full = spread
-                  .results![spread.results!.keys.elementAt(index)]!
-                  .card
-                  .id
-                  .isNotEmpty;
+            children: List.generate(widget.spread.results!.length, (index) {
+              InterpretationType newType =
+                  widget.spread.results!.keys.elementAt(index);
+              bool isCurrent = newType == widget.iType;
+              bool full = widget.spread.results![newType]!.id.isNotEmpty;
               return ElevatedButton(
                   onPressed: () async {
                     if (isCurrent) return;
                     if (!full) {
-                      //If we dont have the answer yet
-
-                      var image =
-                          await _picker.pickImage(source: ImageSource.camera);
-                      TCard? card =
-                          await TCardController().identifyTCard(image);
+                      TCard? card = await TCardController().getRandomCard(
+                        widget.spread.getCardIds(),
+                      );
                       if (card != null) {
-                        InterpretationController().getAnswer(
-                            card, spread.results!.keys.elementAt(index));
+                        ref.read(watchSpreadChange).updateSpread(newType, card);
                       }
+                      ref.read(watchSpreadChange).getInterpretation(newType);
+                    } else {
+                      ref.read(watchSpreadChange).switchToExistingType(newType);
                     }
-                    final container = ProviderContainer();
-
-                    container
-                        .read(switchInterpretationType.notifier)
-                        .switchInterpretationType(iType);
+                    // }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor:
@@ -66,8 +72,9 @@ class SpreadNavigation extends StatelessWidget {
                             )
                           : const SizedBox.shrink(),
                       Text(
-                        enumToString(
-                            spread.results!.keys.elementAt(index).toString()),
+                        enumToString(widget.spread.results!.keys
+                            .elementAt(index)
+                            .toString()),
                         // .capitalize(),
                         style: TextStyle(color: Colors.black),
                       ),

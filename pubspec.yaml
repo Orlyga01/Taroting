@@ -31,9 +31,9 @@ flutter:
     - family: MartelSans
       fonts: 
       - asset: assets/fonts/MartelSans-Regular.ttf
-    - family: ZodiacSigns
-      fonts: 
-      - asset: assets/fonts/ZodiacSigns.ttf  
+    # - family: ZodiacSigns
+    #   fonts: 
+    #   - asset: assets/fonts/ZodiacSigns.ttf  
   assets:
     - assets/labels.txt
     - assets/model_unquant.tflite

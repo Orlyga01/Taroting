@@ -10,6 +10,7 @@ import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/keys.dart';
+import 'package:taroting/spread/spread_model.dart';
 
 class InterpretationController {
   late String? cardid;
@@ -56,9 +57,6 @@ class InterpretationController {
         rethrow;
       }
     }
-    final container = ProviderContainer();
-
-    container.read(watchForAnser.notifier).setNotifyCardStatusChange(answer);
     _answer = answer;
     _iType = iType;
   }
@@ -69,7 +67,7 @@ class InterpretationController {
   ) {
     String interId = CardInterpretation.buildId(
         card.id, iType, GlobalParametersTar().language);
-    return card.interpretations[interId];
+    return card.interpretations != null ? card.interpretations![interId] : null;
   }
 
   Future<List<CardInterpretation>?> getAllCardInterpretation({
