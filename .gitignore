@@ -55,3 +55,4 @@ ios/Podfile.lock
 windows/flutter/*.*
 ios/Podfile.lock
 .gitignore
+lib/card/card_controller.dart
