@@ -14,7 +14,7 @@ class BeRouter {
           settings: settings,
           builder: (context) {
             return InterpretationScreen(
-              card: args?["card"],
+             
             );
           },
         );
