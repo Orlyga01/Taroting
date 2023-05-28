@@ -24,12 +24,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // String? answer = ref.watch(watchForAnser);
-    // if (answer != null && answer.length > 0) {
-    //   widget.spread
-    //       .setResult(widget.iType!, answer, TCardController().currentCard!);
-    //   ref.read(watchSpreadChange).setSpread = widget.spread;
-    // }
+    bool isRandom = true;
     return Column(
       children: [
         Row(
@@ -42,14 +37,22 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
               return ElevatedButton(
                   onPressed: () async {
                     if (isCurrent) return;
+                    TCard? card;
                     if (!full) {
-                      TCard? card = await TCardController().getRandomCard(
-                        widget.spread.getCardIds(),
-                      );
+                      if (isRandom) {
+                        card = await TCardController().getRandomCard(
+                          widget.spread.getCardIds(),
+                        );
+                      } else {
+                        var image =
+                            await _picker.pickImage(source: ImageSource.camera);
+                        card = await TCardController().identifyTCard(image);
+                      }
+
                       if (card != null) {
                         ref.read(watchSpreadChange).updateSpread(newType, card);
+                        ref.read(watchSpreadChange).getInterpretation(newType);
                       }
-                      ref.read(watchSpreadChange).getInterpretation(newType);
                     } else {
                       ref.read(watchSpreadChange).switchToExistingType(newType);
                     }
@@ -80,7 +83,14 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                       ),
                     ],
                   ));
-            }))
+            })),
+        CheckboxListTile(
+          title: Text('Let the app select the card'),
+          value: isRandom,
+          onChanged: (bool? value) {
+            isRandom = value ?? false;
+          },
+        ),
       ],
     );
   }
