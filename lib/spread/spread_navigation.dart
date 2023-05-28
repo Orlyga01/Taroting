@@ -99,7 +99,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
           title: Text(
             'Select a random card',
           ),
-          value: widget.spread.isRandom,
+          value: widget.spread.isRandom ?? true,
           onChanged: (bool? value) {
             widget.spread.isRandom = value ?? false;
             setState(() {});
