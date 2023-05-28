@@ -20,8 +20,8 @@ class TCardController {
     return _cardC;
   }
 
-  Future<TCard?> identifyTCard(XFile? image) async {
-    if (image == null) return null;
+  Future<TCard?> identifyTCard(String imagePath) async {
+    if (imagePath == null) return null;
     String? res = await Tflite.loadModel(
         model: "assets/model_unquant.tflite",
         labels: "assets/labels.txt",
@@ -32,7 +32,7 @@ class TCardController {
             false // defaults to false, set to true to use GPU delegate
         );
     List<dynamic>? output = await Tflite.runModelOnImage(
-      path: image.path,
+      path: imagePath,
       numResults: 2,
       threshold: 0.5,
       imageMean: 127.5,

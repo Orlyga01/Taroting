@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:sharedor/widgets/alerts.dart';
@@ -53,7 +54,16 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                       } else {
                         var image =
                             await _picker.pickImage(source: ImageSource.camera);
-                        card = await TCardController().identifyTCard(image);
+                        if (image != null) {
+                          CroppedFile? cropped = await ImageCropper().cropImage(
+                            sourcePath: image.path,
+                            aspectRatio:
+                                CropAspectRatio(ratioX: 535, ratioY: 924),
+                            compressQuality: 100,
+                            compressFormat: ImageCompressFormat.jpg,
+                          );
+                          card = await TCardController().identifyTCard(image);
+                        }
                       }
 
                       if (card != null) {
