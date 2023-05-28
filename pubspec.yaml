@@ -19,7 +19,7 @@ dependencies:
   meta: ^1.8.0
   sharedor: 
     path: ../sharedor
-  # tflite: ^1.1.2
+  tflite: ^1.1.2
     
 dev_dependencies:
   flutter_test:
