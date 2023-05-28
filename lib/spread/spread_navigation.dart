@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sharedor/common_functions.dart';
+import 'package:sharedor/widgets/alerts.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
@@ -12,7 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SpreadNavigation extends ConsumerStatefulWidget {
   SpreadModel spread;
   InterpretationType? iType;
-  bool isRandom = true;
 
   SpreadNavigation(this.spread, this.iType, {super.key});
 
@@ -46,7 +46,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                     if (isCurrent) return;
                     TCard? card;
                     if (!full) {
-                      if (widget.isRandom) {
+                      if (widget.spread.isRandom == true) {
                         card = await TCardController().getRandomCard(
                           widget.spread.getCardIds(),
                         );
@@ -59,6 +59,10 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                       if (card != null) {
                         ref.read(watchSpreadChange).updateSpread(newType, card);
                         ref.read(watchSpreadChange).getInterpretation(newType);
+                      } else {
+                        showAlertDialog(
+                            " Sorry - the card was not found. Please take a picture again.",
+                            context);
                       }
                     } else {
                       ref.read(watchSpreadChange).switchToExistingType(newType);
@@ -92,10 +96,12 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                   ));
             })),
         CheckboxListTile(
-          title: Text('Select a random card',),
-          value: widget.isRandom,
+          title: Text(
+            'Select a random card',
+          ),
+          value: widget.spread.isRandom,
           onChanged: (bool? value) {
-            widget.isRandom = value ?? false;
+            widget.spread.isRandom = value ?? false;
             setState(() {});
           },
         ),

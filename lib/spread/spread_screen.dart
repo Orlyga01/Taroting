@@ -9,13 +9,13 @@ import 'package:taroting/spread/spread_navigation.dart';
 
 class SpreadScreen extends StatelessWidget {
   SpreadScreen({super.key});
-  SpreadModel spread = SpreadModel.init;
+  SpreadModel spread = SpreadModel.init..isRandom = true;
+
   InterpretationType? iType;
 
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
-      
       spread = ref.watch(watchSpreadChange).getSpread;
       iType = ref.watch(watchSpreadChange).getiType;
       List<Widget> children = getListWidgets();

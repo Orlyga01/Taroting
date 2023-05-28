@@ -31,14 +31,14 @@ class TCardController {
         useGpuDelegate:
             false // defaults to false, set to true to use GPU delegate
         );
-    var output = await Tflite.runModelOnImage(
+    List<dynamic>? output = await Tflite.runModelOnImage(
       path: image.path,
       numResults: 2,
       threshold: 0.5,
       imageMean: 127.5,
       imageStd: 127.5,
     );
-    if (output != null ) {
+    if (output != null && output.isNotEmpty) {
       return FirebaseTCardsRepository().get(output[0]["label"].split(" ")[1]);
     } else {
       throw ("not found");

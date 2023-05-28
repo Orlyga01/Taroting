@@ -4,6 +4,7 @@ import 'package:taroting/card/card_model.dart';
 class SpreadModel {
   SpreadType type;
   Map<InterpretationType, TCard>? results;
+  bool? isRandom;
 
   SpreadModel({required this.type, this.results});
   static SpreadModel get init => SpreadModel(type: SpreadType.ppf, results: {
