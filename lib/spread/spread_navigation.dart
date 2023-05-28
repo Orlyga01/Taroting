@@ -57,12 +57,16 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                         if (image != null) {
                           CroppedFile? cropped = await ImageCropper().cropImage(
                             sourcePath: image.path,
+                            maxHeight: 500,
+                            maxWidth: 200,
                             aspectRatio:
                                 CropAspectRatio(ratioX: 535, ratioY: 924),
                             compressQuality: 100,
                             compressFormat: ImageCompressFormat.jpg,
                           );
-                          card = await TCardController().identifyTCard(image);
+                          if (cropped != null)
+                            card = await TCardController()
+                                .identifyTCard(cropped.path);
                         }
                       }
 

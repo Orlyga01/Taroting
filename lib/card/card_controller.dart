@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+// import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
-// import 'package:tflite/tflite.dart';
+import 'package:tflite/tflite.dart';
 
 class TCardController {
   late String cardid;
@@ -39,7 +39,7 @@ class TCardController {
       imageStd: 127.5,
     );
     if (output != null && output.isNotEmpty) {
-      return FirebaseTCardsRepository().get(output[0]["label"].split(" ")[1]);
+      return getCard(output[0]["label"].split(" ")[1]);
     } else {
       throw ("not found");
     }
