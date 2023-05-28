@@ -22,6 +22,9 @@ class SpreadModel {
     results!.forEach((key, value) => list.add(value.id));
     return list;
   }
+
+  bool get isIninitState =>
+      results!.values.every((element) => element.id.isEmpty);
 }
 
 enum SpreadType { ppf }

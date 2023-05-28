@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SpreadNavigation extends ConsumerStatefulWidget {
   SpreadModel spread;
   InterpretationType? iType;
+  bool isRandom = true;
 
   SpreadNavigation(this.spread, this.iType, {super.key});
 
@@ -24,9 +25,15 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    bool isRandom = true;
     return Column(
       children: [
+        if (widget.spread.isIninitState)
+          Padding(
+              padding: const EdgeInsets.only(top: 150, bottom: 20),
+              child: Text(
+                "Select The card position in the Spread:",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              )),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(widget.spread.results!.length, (index) {
@@ -39,7 +46,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                     if (isCurrent) return;
                     TCard? card;
                     if (!full) {
-                      if (isRandom) {
+                      if (widget.isRandom) {
                         card = await TCardController().getRandomCard(
                           widget.spread.getCardIds(),
                         );
@@ -85,10 +92,11 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                   ));
             })),
         CheckboxListTile(
-          title: Text('Let the app select the card'),
-          value: isRandom,
+          title: Text('Select a random card',),
+          value: widget.isRandom,
           onChanged: (bool? value) {
-            isRandom = value ?? false;
+            widget.isRandom = value ?? false;
+            setState(() {});
           },
         ),
       ],
