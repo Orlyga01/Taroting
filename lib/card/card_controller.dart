@@ -38,8 +38,8 @@ class TCardController {
       imageMean: 127.5,
       imageStd: 127.5,
     );
-    if (output != null && output[0]["confidence"] > 0.8) {
-      return FirebaseTCardsRepository().get(output[0]["label"]);
+    if (output != null ) {
+      return FirebaseTCardsRepository().get(output[0]["label"].split(" ")[1]);
     } else {
       throw ("not found");
     }
