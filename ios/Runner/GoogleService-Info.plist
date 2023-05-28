@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>256567282449-5tbfdih7fmln6u18bvpu3tbisr1t66l9.apps.googleusercontent.com</string>
+	<string>332126803247-o0p127sstb694h3ursq59ioi3k4n6a2a.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.256567282449-5tbfdih7fmln6u18bvpu3tbisr1t66l9</string>
+	<string>com.googleusercontent.apps.332126803247-o0p127sstb694h3ursq59ioi3k4n6a2a</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCRPv6tZSLutVj3WmV2Nxh1fBYbK9IhvPs</string>
+	<string>AIzaSyD-0TWi10X5wBgkCZPfXT2aXIjZihWrPu4</string>
 	<key>GCM_SENDER_ID</key>
-	<string>256567282449</string>
+	<string>332126803247</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.taroting</string>
 	<key>PROJECT_ID</key>
-	<string>menikot</string>
+	<string>taroting-78a04</string>
 	<key>STORAGE_BUCKET</key>
-	<string>menikot.appspot.com</string>
+	<string>taroting-78a04.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:256567282449:ios:b761b9f498301799b69ab0</string>
+	<string>1:332126803247:ios:fd0be983fc31a408b37dda</string>
 </dict>
 </plist>

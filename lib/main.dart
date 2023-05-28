@@ -13,9 +13,14 @@ final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Platform.isAndroid) {
+        await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        );
+      } else if (Platform.isIOS) {
+        await Firebase.initializeApp();
+      }
+  
   await GlobalParametersTar().setGlobalParameters({
     "language": Platform.localeName,
   });

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:taroting/Interpretation/interpretation_screen.dart';
 
 class BeRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,15 +8,6 @@ class BeRouter {
       args = settings.arguments as Map<String, dynamic>;
     }
     switch (settings.name) {
-      case "interpretation":
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (context) {
-            return InterpretationScreen(
-             
-            );
-          },
-        );
       default:
         return MaterialPageRoute(
             settings: settings,
