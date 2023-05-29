@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sharedor/common_functions.dart';
-import 'package:sharedor/widgets/alerts.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
@@ -52,7 +51,6 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                           widget.spread.getCardIds(),
                         );
                       } else {
-                        
                         var image =
                             await _picker.pickImage(source: ImageSource.camera);
                         if (image != null) {
@@ -75,9 +73,23 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                         ref.read(watchSpreadChange).updateSpread(newType, card);
                         ref.read(watchSpreadChange).getInterpretation(newType);
                       } else {
-                        showAlertDialog(
-                            " Sorry - the card was not found. Please take a picture again.",
-                            context);
+                        showDialog(
+                            context: context,
+                            builder: (_) {
+                              // return object of type Dialog
+
+                              return AlertDialog(
+                                  title: Text(
+                                      "Sorry - the card was not found. Please take a picture again."),
+                                  actions: [
+                                    OutlinedButton(
+                                        key: const Key("alertOKBtn"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("OK"))
+                                  ]);
+                            });
                       }
                     } else {
                       ref.read(watchSpreadChange).switchToExistingType(newType);
