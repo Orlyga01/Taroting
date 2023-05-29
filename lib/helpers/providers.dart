@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
@@ -107,3 +108,4 @@ class InterpretationState extends Notifier<InterpretationType?> {
 
   // String get getAnswer => _answer;
 }
+ List<CameraDescription>_cameras=[];

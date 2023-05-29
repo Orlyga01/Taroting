@@ -52,6 +52,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                           widget.spread.getCardIds(),
                         );
                       } else {
+                        
                         var image =
                             await _picker.pickImage(source: ImageSource.camera);
                         if (image != null) {
