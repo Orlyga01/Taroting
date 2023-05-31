@@ -1,98 +1,96 @@
-// import 'package:camera/camera.dart';
-// import 'package:flutter/material.dart';
-// import 'package:taroting/helpers/global_parameters.dart';
+import 'dart:io';
 
-// class CameraOverlay extends StatefulWidget {
-//   const CameraOverlay({super.key});
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image/image.dart' as img;
 
-//   @override
-//   State<CameraOverlay> createState() => _CameraOverlayState();
-// }
+final xFileProvider = StateProvider((ref) => XFile(''));
 
-// class _CameraOverlayState extends State<CameraOverlay> {
-//   CameraDescription camera = GlobalParametersTar().cameras[0];
-//   @override
-// void didChangeAppLifecycleState(AppLifecycleState state) {
-//   final CameraController? controller = CameraController(camera, ResolutionPreset.max);
+class HomeScreen extends ConsumerStatefulWidget {
+  HomeScreen({super.key});
+  static const routeName = 'home-screen';
+  late img.Image cropped;
+  bool? loaded = false;
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
 
-//   final CameraController? cameraController = controller;
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late CameraController controller;
+  bool loaded = false;
 
-//   // App state changed before we got the chance to initialize.
-//   if (cameraController == null || !cameraController.value.isInitialized) {
-//     return;
-//   }
+  @override
+  Widget build(BuildContext context) {
+    final xFileState = ref.watch(xFileProvider);
 
-//   if (state == AppLifecycleState.inactive) {
-//     cameraController.dispose();
-//   } else if (state == AppLifecycleState.resumed) {
-//     onNewCameraSelected(cameraController.description);
-//   }
-// }
-// void onNewCameraSelected(CameraDescription cameraDescription) async {
-//       final previousCameraController = controller;
-//       // Instantiating the camera controller
-//       final CameraController cameraController = CameraController(
-//         cameraDescription,
-//         ResolutionPreset.high,
-//         imageFormatGroup: ImageFormatGroup.jpeg,
-//       );
+    return Scaffold(
+      body: FutureBuilder(
+        future: initializationCamera(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return loaded
+                ? Image.memory(widget.cropped.getBytes())
+                : Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: CameraPreview(controller),
+                      ),
+                      AspectRatio(
+                        aspectRatio: 3 / 4,
+                        child: Image.asset(
+                          'assets/camera-overlay-conceptcoder.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => onTakePicture(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
 
-//       // Dispose the previous controller
-//       await previousCameraController?.dispose();
+  Future<void> initializationCamera() async {
+    var cameras = await availableCameras();
+    controller = CameraController(
+      cameras[0],
+      ResolutionPreset.medium,
+      imageFormatGroup: ImageFormatGroup.yuv420,
+    );
+    await controller.initialize();
+  }
 
-//       // Replace with the new controller
-//       if (mounted) {
-//          setState(() {
-//            controller = cameraController;
-//         });
-//       }
+  void onTakePicture() async {
+    await controller.takePicture().then((XFile xfile) async {
+      if (mounted) {
+        if (xfile != null) {
+          ref.read(xFileProvider.notifier).state = xfile;
+          final bytes = await xfile.readAsBytes();
+          final image = img.decodeImage(bytes);
 
-//       // Update UI if controller updated
-//       cameraController.addListener(() {
-//         if (mounted) setState(() {});
-//       });
-
-//       // Initialize controller
-//       try {
-//         await cameraController.initialize();
-//       } on CameraException catch (e) {
-//         print('Error initializing camera: $e');
-//       }
-
-//       // Update the Boolean
-//       if (mounted) {
-//         setState(() {
-//            _isCameraInitialized = controller!.value.isInitialized;
-//         });
-//       }
-//    }
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     controller = CameraController(_cameras[0], ResolutionPreset.max);
-
-//     return Stack(
-//   children: [
-//     Positioned.fill(
-//       child: AspectRatio(
-//           aspectRatio: 4/3,
-//           child: CameraPreview(controller)),
-//     ),
-//     Positioned.fill(
-//       child: Opacity(
-//         opacity: 0.3,
-//         child: Image.network(
-//           'urlfor the overlay image here',
-//           fit: BoxFit.fill,
-//         ),
-//       ),
-//     ),
-//    Positioned(
-//     bottom : 0,
-//     child: Container(), //other widgets like capture etc here
-//    )
-//   ],
-// );;
-//   }
-// }
+          widget.cropped = img.copyCrop(image!, 30, 30, 100, 200);
+          setState(() {
+            loaded = true;
+          });
+        }
+      }
+    });
+  }
+}

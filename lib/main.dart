@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/spread/spread_screen.dart';
+import 'package:taroting/card/camera.dart';
+
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,13 +16,13 @@ final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-      } else if (Platform.isIOS) {
-        await Firebase.initializeApp();
-      }
-  
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } else if (Platform.isIOS) {
+    await Firebase.initializeApp();
+  }
+
   await GlobalParametersTar().setGlobalParameters({
     "language": Platform.localeName,
   });
@@ -44,7 +46,7 @@ class MainApp extends StatelessWidget {
             backgroundColor: Colors.white,
             duration: 2500,
             splashIconSize: GlobalParametersTar().screenSize.height,
-            nextScreen: SpreadScreen(),
+            nextScreen: HomeScreen(),
             splash: const SizedBox.shrink()));
   }
 }
