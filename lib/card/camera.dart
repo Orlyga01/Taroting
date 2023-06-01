@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
+import 'package:sharedor/sharedor.dart';
 
 final xFileProvider = StateProvider((ref) => XFile(''));
 
@@ -30,7 +31,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return loaded
-                ? Image.memory(widget.cropped.getBytes())
+                ? Image.file(File(xFileState.path))
                 : Stack(
                     alignment: Alignment.bottomCenter,
                     children: [
@@ -84,8 +85,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ref.read(xFileProvider.notifier).state = xfile;
           final bytes = await xfile.readAsBytes();
           final image = img.decodeImage(bytes);
+          showDialog(
+              context: context,
+              builder: (_) {
+                // return object of type Dialog
 
-          widget.cropped = img.copyCrop(image!, 30, 30, 100, 200);
+                return AlertDialog(
+                    title: Text("hi"),
+                    content: Image.file(File(xfile.path)),
+                    actions: [
+                      OutlinedButton(
+                          key: const Key("alertOKBtn"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("OK"))
+                    ]);
+              });
           setState(() {
             loaded = true;
           });
