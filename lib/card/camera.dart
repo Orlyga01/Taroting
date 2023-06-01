@@ -8,16 +8,16 @@ import 'package:sharedor/sharedor.dart';
 
 final xFileProvider = StateProvider((ref) => XFile(''));
 
-class HomeScreen extends ConsumerStatefulWidget {
-  HomeScreen({super.key});
+class CaptureCameraWidget extends ConsumerStatefulWidget {
+  CaptureCameraWidget({super.key});
   static const routeName = 'home-screen';
   late img.Image cropped;
   bool? loaded = false;
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _CaptureCameraWidgetState createState() => _CaptureCameraWidgetState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   late CameraController controller;
   bool loaded = false;
 
@@ -52,7 +52,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
                           child: CircleAvatar(
                             radius: 30.0,
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.green,
+                            child: Icon(Icons.camera_alt_outlined, color: Colors.white)
                           ),
                         ),
                       ),

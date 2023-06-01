@@ -17,7 +17,7 @@ class CardWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 100),
+                    constraints: const BoxConstraints(maxHeight: 150),
                     // width: double.infinity,
                     // height: 200, // Adjust the height according to your image size
                     child: Image.asset(

@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:taroting/card/camera.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/spread/spread_screen.dart';
-import 'package:taroting/card/camera.dart';
 
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +46,7 @@ class MainApp extends StatelessWidget {
             backgroundColor: Colors.white,
             duration: 2500,
             splashIconSize: GlobalParametersTar().screenSize.height,
-            nextScreen: HomeScreen(),
+            nextScreen: CaptureCameraWidget(),
             splash: const SizedBox.shrink()));
   }
 }
