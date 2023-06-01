@@ -67,7 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332126803247',
     projectId: 'taroting-78a04',
     storageBucket: 'taroting-78a04.appspot.com',
-    iosClientId: '332126803247-onr9ss6eigia1iv1s87sa8if8ok7eai2.apps.googleusercontent.com',
+    iosClientId:
+        '332126803247-onr9ss6eigia1iv1s87sa8if8ok7eai2.apps.googleusercontent.com',
     iosBundleId: 'com.taroting',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332126803247',
     projectId: 'taroting-78a04',
     storageBucket: 'taroting-78a04.appspot.com',
-    iosClientId: '332126803247-s9da96arc3lvvmvbla3ksqvdu7qgbbqb.apps.googleusercontent.com',
-    iosBundleId: 'com.example.taroting',
+    iosClientId:
+        '332126803247-s9da96arc3lvvmvbla3ksqvdu7qgbbqb.apps.googleusercontent.com',
+    iosBundleId: 'com.taroting',
   );
 }
