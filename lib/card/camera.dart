@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:sharedor/sharedor.dart';
 
-final xFileProvider = StateProvider((ref) => XFile(''));
+final xFileProvider = StateProvider((ref) => File(''));
 
 class CaptureCameraWidget extends ConsumerStatefulWidget {
   CaptureCameraWidget({super.key});
@@ -51,10 +51,10 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
                           child: CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Colors.green,
-                            child: Icon(Icons.camera_alt_outlined, color: Colors.white)
-                          ),
+                              radius: 30.0,
+                              backgroundColor: Colors.green,
+                              child: Icon(Icons.camera_alt_outlined,
+                                  color: Colors.white)),
                         ),
                       ),
                     ],
@@ -83,9 +83,14 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
     await controller.takePicture().then((XFile xfile) async {
       if (mounted) {
         if (xfile != null) {
-          ref.read(xFileProvider.notifier).state = xfile;
           final bytes = await xfile.readAsBytes();
-          final image = img.decodeImage(bytes);
+          //   final image = img.decodeImage(bytes);
+          // File? cr = await cropImage(xfile.path, image!.width * 0.22,
+          //     image.height * 0.24, image.width * 0.55, image.height * 0.52);
+          File? cr = await cropImage(xfile.path, 50, 50, 100, 180);
+
+          //   ref.read(xFileProvider.notifier).state = cr!;
+
           showDialog(
               context: context,
               builder: (_) {
@@ -93,7 +98,7 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
 
                 return AlertDialog(
                     title: Text("hi"),
-                    content: Image.file(File(xfile.path)),
+                    content: Image.file(cr!),
                     actions: [
                       OutlinedButton(
                           key: const Key("alertOKBtn"),
@@ -110,4 +115,35 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
       }
     });
   }
+}
+
+Future<File?> cropImage(
+    String imagePath, double x, double y, double width, double height) async {
+  // Read the image file
+  final File imageFile = File(imagePath);
+  final List<int> imageBytes = await imageFile.readAsBytes();
+  final img.Image? image = img.decodeImage(imageBytes);
+  if (image != null) {
+    final int left = (x).round();
+    final int top = (y).round();
+    final int cropWidth = (width).round();
+    final int cropHeight = (height).round();
+    final img.Image croppedImage =
+        img.copyCrop(image, left, top, cropWidth, cropHeight);
+    final croppedFile = File('${imagePath}_croppe.png');
+
+    return croppedFile.writeAsBytes(img.encodePng(croppedImage));
+    // Crop the image
+
+    // Calculate the coordinates based on the provided dimensions
+
+    // Get the application documents directory
+    // final Directory appDir = await getApplicationDocumentsDirectory();
+    // final String appPath = appDir.path;
+
+    // Save the cropped image to a file
+    // final File croppedFile = File('$appPath/cropped_image.jpg');
+    // return croppedFile.writeAsBytes(img.encodeJpg(croppedImage));
+  }
+  return null;
 }
