@@ -7,6 +7,7 @@ import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_widget.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:taroting/spread/spread_navigation.dart';
 
@@ -20,12 +21,11 @@ class SpreadScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
-      spread = ref.watch(watchSpreadChange).getSpread;
-      iType = ref.watch(watchSpreadChange).getiType;
       final card = ref.watch(watchCard);
+      iType = ref.watch(watchSpreadChange.notifier).getiType;
       if (card != null && iType != null) {
         TCardController().currentCard = card;
-        ref.read(watchSpreadChange).updateSpread(iType!, card);
+        SpreadController().updateSpread(iType!, card);
         ref.read(watchSpreadChange).getInterpretation(iType!);
       }
       showCamera = ref.watch(watchSpreadChange).showCamera;

@@ -5,6 +5,7 @@ import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 
 // final watchForAnser1 =
@@ -23,7 +24,7 @@ final watchSpreadChange =
     ChangeNotifierProvider<SpreadNotifier>((ref) => SpreadNotifier());
 
 class SpreadNotifier extends ChangeNotifier {
-  SpreadModel _spread = SpreadModel.init;
+  SpreadModel _spread = SpreadController().currentSpread;
   InterpretationType? _iType;
   bool _showCamera = false;
   set setSpread(SpreadModel spread) {
@@ -35,28 +36,31 @@ class SpreadNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSpread(InterpretationType iType, TCard card) {
-    _iType = iType;
-    _spread.results![iType] = card;
-    notifyListeners();
-  }
+  // void updateSpread(InterpretationType iType, TCard card) {
+  //   _iType = iType;
+  //   _spread.results![iType] = card;
+  //   notifyListeners();
+  // }
 
   set switchCameraOn(bool on) => _showCamera = on;
   void switchToExistingType(InterpretationType iType) {
     _iType = iType;
-    TCardController().switchCurrentCard = _spread.results![iType]!;
+    TCardController().switchCurrentCard =
+        SpreadController().currentSpread.results![iType]!;
     notifyListeners();
   }
 
   void getInterpretation(InterpretationType iType) async {
-    await InterpretationController().getAnswer(_spread.results![iType]!, iType);
-    _spread.results![iType] = TCardController().currentCard!;
+    await InterpretationController()
+        .getAnswer(SpreadController().currentSpread.results![iType]!, iType);
+    SpreadController().currentSpread.results![iType] =
+        TCardController().currentCard!;
     notifyListeners();
   }
 
   void notifyChange() => notifyListeners();
 
-  SpreadModel get getSpread => _spread;
+  SpreadModel get getSpread => SpreadController().currentSpread;
   InterpretationType? get getiType => _iType;
   bool get showCamera => _showCamera;
 }

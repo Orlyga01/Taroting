@@ -5,6 +5,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,6 +24,9 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    // widget.spread = ref.watch(watchSpreadChange).getSpread;
+    widget.iType = ref.watch(watchSpreadChange).getiType;
+    widget.spread = SpreadController().currentSpread;
     return Column(
       children: [
         if (widget.spread.isIninitState)
