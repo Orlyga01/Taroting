@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:sharedor/sharedor.dart';
+import 'package:taroting/card/card_controller.dart';
+import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/providers.dart';
 
 final xFileProvider = StateProvider((ref) => File(''));
 
@@ -25,47 +28,45 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   Widget build(BuildContext context) {
     final xFileState = ref.watch(xFileProvider);
 
-    return Scaffold(
-      body: FutureBuilder(
-        future: initializationCamera(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return loaded
-                ? Image.file(File(xFileState.path))
-                : Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 3 / 4,
-                        child: CameraPreview(controller),
+    return FutureBuilder(
+      future: initializationCamera(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return loaded
+              ? Image.file(File(xFileState.path))
+              : Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: CameraPreview(controller),
+                    ),
+                    AspectRatio(
+                      aspectRatio: 1,
+                      child: Image.asset(
+                        'assets/camera-overlay-conceptcoder.png',
+                        fit: BoxFit.cover,
                       ),
-                      AspectRatio(
-                        aspectRatio: 3 / 4,
-                        child: Image.asset(
-                          'assets/camera-overlay-conceptcoder.png',
-                          fit: BoxFit.cover,
-                        ),
+                    ),
+                    InkWell(
+                      onTap: () => onTakePicture(),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: CircleAvatar(
+                            radius: 30.0,
+                            backgroundColor: Colors.green,
+                            child: Icon(Icons.camera_alt_outlined,
+                                color: Colors.white)),
                       ),
-                      InkWell(
-                        onTap: () => onTakePicture(),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
-                          child: CircleAvatar(
-                              radius: 30.0,
-                              backgroundColor: Colors.green,
-                              child: Icon(Icons.camera_alt_outlined,
-                                  color: Colors.white)),
-                        ),
-                      ),
-                    ],
-                  );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+                    ),
+                  ],
+                );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
@@ -85,32 +86,51 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
         if (xfile != null) {
           final bytes = await xfile.readAsBytes();
           //   final image = img.decodeImage(bytes);
-          // File? cr = await cropImage(xfile.path, image!.width * 0.22,
-          //     image.height * 0.24, image.width * 0.55, image.height * 0.52);
-          File? cr = await cropImage(xfile.path, 50, 50, 100, 180);
+          File? cr = await cropImage(xfile.path, 0.22, 0.24, 0.55, 0.52);
 
-          //   ref.read(xFileProvider.notifier).state = cr!;
+          TCard? card = await TCardController().identifyTCard(cr!.path);
+          //???  ref.read(xFileProvider.notifier).state = cr;
+          if (card != null) {
+            ref.read(watchCard.notifier).cardLoaded = card;
+          } else {
+            showDialog(
+                context: context,
+                builder: (_) {
+                  // return object of type Dialog
 
+                  return AlertDialog(
+                      title: Text(
+                          " Sorry - the card was not found. Please take a picture again."),
+                      actions: [
+                        OutlinedButton(
+                            key: const Key("alertOKBtn"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("OK"))
+                      ]);
+                });
+          }
           showDialog(
               context: context,
               builder: (_) {
                 // return object of type Dialog
 
                 return AlertDialog(
-                    title: Text("hi"),
-                    content: Image.file(cr!),
+                    title: Text(card!.name),
+                    content: Image.file(cr),
                     actions: [
                       OutlinedButton(
                           key: const Key("alertOKBtn"),
                           onPressed: () {
+                            loaded = true;
+                            ref.read(watchSpreadChange).switchCameraOn = false;
+
                             Navigator.of(context).pop();
                           },
                           child: const Text("OK"))
                     ]);
               });
-          setState(() {
-            loaded = true;
-          });
         }
       }
     });

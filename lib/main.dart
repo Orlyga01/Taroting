@@ -46,7 +46,7 @@ class MainApp extends StatelessWidget {
             backgroundColor: Colors.white,
             duration: 2500,
             splashIconSize: GlobalParametersTar().screenSize.height,
-            nextScreen: CaptureCameraWidget(),
+            nextScreen: SpreadScreen(),
             splash: const SizedBox.shrink()));
   }
 }

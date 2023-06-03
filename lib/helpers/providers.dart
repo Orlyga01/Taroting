@@ -91,6 +91,8 @@ class CardState extends Notifier<TCard?> {
     state = TCardController().currentCard;
   }
 
+  set cardLoaded(TCard? card) => state = card;
+
   // String get getAnswer => _answer;
 }
 

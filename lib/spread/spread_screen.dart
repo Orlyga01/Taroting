@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_widget.dart';
 import 'package:taroting/card/camera.dart';
+import 'package:taroting/card/card_controller.dart';
+import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_widget.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_model.dart';
@@ -20,6 +22,12 @@ class SpreadScreen extends StatelessWidget {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
       spread = ref.watch(watchSpreadChange).getSpread;
       iType = ref.watch(watchSpreadChange).getiType;
+      final card = ref.watch(watchCard);
+      if (card != null && iType != null) {
+        TCardController().currentCard = card;
+        ref.read(watchSpreadChange).updateSpread(iType!, card);
+        ref.read(watchSpreadChange).getInterpretation(iType!);
+      }
       showCamera = ref.watch(watchSpreadChange).showCamera;
       List<Widget> children = getListWidgets();
       return Scaffold(

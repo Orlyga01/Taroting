@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sharedor/common_functions.dart';
-import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
@@ -28,11 +26,11 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
     return Column(
       children: [
         if (widget.spread.isIninitState)
-          Padding(
-              padding: const EdgeInsets.only(top: 150, bottom: 20),
+          const Padding(
+              padding: EdgeInsets.only(top: 150, bottom: 40),
               child: Text(
-                "Select The card position in the Spread:",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                "Position in the Spread:",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               )),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -44,63 +42,26 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
               return ElevatedButton(
                   onPressed: () async {
                     if (isCurrent) return;
-                    TCard? card;
+
                     if (!full) {
-                      if (widget.spread.isRandom == true) {
-                        card = await TCardController().getRandomCard(
+                      if (widget.spread.isRandom != false) {
+                        TCard? card = await TCardController().getRandomCard(
                           widget.spread.getCardIds(),
                         );
+                        ref.read(watchCard.notifier).cardLoaded = card;
                       } else {
-                        var image =
-                            await _picker.pickImage(source: ImageSource.camera);
-                        if (image != null) {
-                          CroppedFile? cropped = await ImageCropper().cropImage(
-                            sourcePath: image.path,
-                            maxHeight: 500,
-                            maxWidth: 200,
-                            aspectRatio:
-                                CropAspectRatio(ratioX: 535, ratioY: 924),
-                            compressQuality: 100,
-                            compressFormat: ImageCompressFormat.jpg,
-                          );
-                          if (cropped != null)
-                            card = await TCardController()
-                                .identifyTCard(cropped.path);
-                        }
+                        ref.read(watchSpreadChange).switchCameraOn = true;
                       }
-
-                      if (card != null) {
-                        ref.read(watchSpreadChange).updateSpread(newType, card);
-                        ref.read(watchSpreadChange).getInterpretation(newType);
-                      } else {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              // return object of type Dialog
-
-                              return AlertDialog(
-                                  title: Text(
-                                      " Sorry - the card was not found. Please take a picture again."),
-                                  actions: [
-                                    OutlinedButton(
-                                        key: const Key("alertOKBtn"),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text("OK"))
-                                  ]);
-                            });
-                      }
-                    } else {
-                      ref.read(watchSpreadChange).switchToExistingType(newType);
                     }
+                    ref.read(watchSpreadChange).switchToExistingType(newType);
                     // }
                   },
                   style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isCurrent ? Colors.transparent : Colors.white,
                       elevation: isCurrent ? 0 : 4.0,
-                      padding: const EdgeInsets.all(5)),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 8)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,13 +78,13 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                             .elementAt(index)
                             .toString()),
                         // .capitalize(),
-                        style: TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ],
                   ));
             })),
         CheckboxListTile(
-          title: Text(
+          title: const Text(
             'Select a random card',
           ),
           value: widget.spread.isRandom ?? true,
