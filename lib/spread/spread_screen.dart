@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_widget.dart';
+import 'package:taroting/card/camera.dart';
 import 'package:taroting/card/card_widget.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_model.dart';
@@ -12,12 +13,14 @@ class SpreadScreen extends StatelessWidget {
   SpreadModel spread = SpreadModel.init..isRandom = true;
 
   InterpretationType? iType;
+  bool showCamera = false;
 
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
       spread = ref.watch(watchSpreadChange).getSpread;
       iType = ref.watch(watchSpreadChange).getiType;
+      showCamera = ref.watch(watchSpreadChange).showCamera;
       List<Widget> children = getListWidgets();
       return Scaffold(
           body: Padding(
@@ -32,19 +35,21 @@ class SpreadScreen extends StatelessWidget {
   }
 
   List<Widget> getListWidgets() {
-    return [
-      SpreadNavigation(spread, iType),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: Container(
-            width: double.infinity,
-            height: 120, // Adjust the height according to your image size
-            child: CardWidget(card: spread.results![iType])),
-      ),
-      InterpretationWidget(
-        card: spread.results![iType],
-        iType: iType,
-      )
-    ];
+    return showCamera
+        ? [CaptureCameraWidget()]
+        : [
+            SpreadNavigation(spread, iType),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Container(
+                  width: double.infinity,
+                  height: 120, // Adjust the height according to your image size
+                  child: CardWidget(card: spread.results![iType])),
+            ),
+            InterpretationWidget(
+              card: spread.results![iType],
+              iType: iType,
+            )
+          ];
   }
 }

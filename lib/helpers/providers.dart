@@ -25,6 +25,7 @@ final watchSpreadChange =
 class SpreadNotifier extends ChangeNotifier {
   SpreadModel _spread = SpreadModel.init;
   InterpretationType? _iType;
+  bool _showCamera = false;
   set setSpread(SpreadModel spread) {
     _spread = spread;
   }
@@ -40,6 +41,7 @@ class SpreadNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  set switchCameraOn(bool on) => _showCamera = on;
   void switchToExistingType(InterpretationType iType) {
     _iType = iType;
     TCardController().switchCurrentCard = _spread.results![iType]!;
@@ -56,6 +58,7 @@ class SpreadNotifier extends ChangeNotifier {
 
   SpreadModel get getSpread => _spread;
   InterpretationType? get getiType => _iType;
+  bool get showCamera => _showCamera;
 }
 
 final watchForAnser =
@@ -108,4 +111,5 @@ class InterpretationState extends Notifier<InterpretationType?> {
 
   // String get getAnswer => _answer;
 }
- List<CameraDescription>_cameras=[];
+
+List<CameraDescription> _cameras = [];
