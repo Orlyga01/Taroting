@@ -29,7 +29,7 @@ class InterpretationController {
     String answer = "";
 
     CardInterpretation? savedAnswer = getInterpretationFromCard(card, iType);
-
+    if (card.id.isEmpty) return;
     if (savedAnswer != null) {
       answer = savedAnswer.interpretation;
     } else {
@@ -67,7 +67,7 @@ class InterpretationController {
   ) {
     String interId = CardInterpretation.buildId(
         card.id, iType, GlobalParametersTar().language);
-    return card.interpretations != null ? card.interpretations![interId] : null;
+    return card.interpretations != null ? card.interpretations![iType] : null;
   }
 
   Future<List<CardInterpretation>?> getAllCardInterpretation({

@@ -51,6 +51,8 @@ class TCardController {
       currentCard = card;
       await loadInterpretations();
       //  InterpretationController().getAnswer(card, InterpretationType.subject, );
+    } else {
+      print(cardid + " wasnt able to find in DB");
     }
 
     return card;

@@ -8,61 +8,18 @@ import 'package:taroting/card/card_model.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 
-// final watchForAnser1 =
-//     ChangeNotifierProvider.autoDispose<AnswerState1>((ref) => AnswerState1());
+final watchSpread =
+    NotifierProvider<SpreadState, SpreadModel?>(() => SpreadState());
 
-// class AnswerState1 extends ChangeNotifier {
-//   String _answer = "loading";
-//   void setNotifyCardStatusChange(String answer) {
-//     _answer = answer;
-//     notifyListeners();
-//   }
-
-//   String get getAnswer => _answer;
-// }
-final watchSpreadChange =
-    ChangeNotifierProvider<SpreadNotifier>((ref) => SpreadNotifier());
-
-class SpreadNotifier extends ChangeNotifier {
-  SpreadModel _spread = SpreadController().currentSpread;
-  InterpretationType? _iType;
-  bool _showCamera = false;
-  set setSpread(SpreadModel spread) {
-    _spread = spread;
+class SpreadState extends Notifier<SpreadModel?> {
+  @override
+  SpreadModel? build() {
+    SpreadModel.init;
   }
 
-  set setType(InterpretationType iType) {
-    _iType = iType;
-    notifyListeners();
-  }
-
-  // void updateSpread(InterpretationType iType, TCard card) {
-  //   _iType = iType;
-  //   _spread.results![iType] = card;
-  //   notifyListeners();
-  // }
-
-  set switchCameraOn(bool on) => _showCamera = on;
-  void switchToExistingType(InterpretationType iType) {
-    _iType = iType;
-    TCardController().switchCurrentCard =
-        SpreadController().currentSpread.results![iType]!;
-    notifyListeners();
-  }
-
-  void getInterpretation(InterpretationType iType) async {
-    await InterpretationController()
-        .getAnswer(SpreadController().currentSpread.results![iType]!, iType);
-    SpreadController().currentSpread.results![iType] =
-        TCardController().currentCard!;
-    notifyListeners();
-  }
-
-  void notifyChange() => notifyListeners();
-
-  SpreadModel get getSpread => SpreadController().currentSpread;
-  InterpretationType? get getiType => _iType;
-  bool get showCamera => _showCamera;
+  void set spreadUpdate(SpreadModel spread) =>
+      state = SpreadController().currentSpread;
+  // String get getAnswer => _answer;
 }
 
 final watchForAnser =
@@ -90,32 +47,23 @@ class CardState extends Notifier<TCard?> {
     return null;
   }
 
-  //String _answer = "loading";
-  void setNotifyCardStatusChange() {
-    state = TCardController().currentCard;
-  }
-
   set cardLoaded(TCard? card) => state = card;
-
   // String get getAnswer => _answer;
 }
 
-final switchInterpretationType =
-    NotifierProvider<InterpretationState, InterpretationType?>(
-        () => InterpretationState());
+final watchOpenCamera =
+    NotifierProvider<CameraState, bool>(() => CameraState());
 
-class InterpretationState extends Notifier<InterpretationType?> {
+class CameraState extends Notifier<bool> {
   @override
-  InterpretationType? build() {
-    return null;
+  bool build() {
+    return false;
   }
 
-  //String _answer = "loading";
-  void switchInterpretationType(InterpretationType iType) {
-    state = iType;
-  }
-
+  set setCameraState(bool on) => state = on;
   // String get getAnswer => _answer;
 }
+
+final watchAnswer = StateProvider<String>((ref) => "");
 
 List<CameraDescription> _cameras = [];

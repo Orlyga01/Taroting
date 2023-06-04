@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/providers.dart';
 
 class CardWidget extends ConsumerWidget {
   TCard? card;
@@ -8,6 +9,7 @@ class CardWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final card = ref.watch(watchCard);
     return card == null
         ? SizedBox.shrink()
         : Column(

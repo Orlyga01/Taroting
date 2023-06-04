@@ -8,6 +8,7 @@ import 'package:sharedor/sharedor.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/spread/spread_controller.dart';
 
 final xFileProvider = StateProvider((ref) => File(''));
 
@@ -91,8 +92,14 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
           TCard? card = await TCardController().identifyTCard(cr!.path);
           //???  ref.read(xFileProvider.notifier).state = cr;
           if (card != null) {
+            await SpreadController().loadCard(card: card);
+
             ref.read(watchCard.notifier).cardLoaded = card;
+            ref.read(watchOpenCamera.notifier).setCameraState = false;
+            ref.read(watchSpread.notifier).spreadUpdate =
+                SpreadController().currentSpread;
           } else {
+            // ignore: use_build_context_synchronously
             showDialog(
                 context: context,
                 builder: (_) {
@@ -111,26 +118,6 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                       ]);
                 });
           }
-          showDialog(
-              context: context,
-              builder: (_) {
-                // return object of type Dialog
-
-                return AlertDialog(
-                    title: Text(card!.name),
-                    content: Image.file(cr),
-                    actions: [
-                      OutlinedButton(
-                          key: const Key("alertOKBtn"),
-                          onPressed: () {
-                            loaded = true;
-                            ref.read(watchSpreadChange).switchCameraOn = false;
-
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("OK"))
-                    ]);
-              });
         }
       }
     });
