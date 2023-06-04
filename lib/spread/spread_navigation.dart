@@ -82,16 +82,20 @@ class SpreadNavigation extends StatelessWidget {
                       ],
                     ));
               })),
-          CheckboxListTile(
-              title: const Text(
+          Wrap(
+            spacing: 10,
+            children: [
+              const Text(
                 'Select a random card',
               ),
-              value: spread.isRandom ?? true,
-              onChanged: (bool? value) {}
-              //   widget.spread.isRandom = value ?? false;
-              //   setState(() {});
-              // },
+              Switch(
+                value: spread.isRandom ?? true,
+                onChanged: (bool? value) {
+                  spread.isRandom = value ?? false;
+                },
               ),
+            ],
+          ),
         ],
       );
     });

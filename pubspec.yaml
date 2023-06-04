@@ -14,14 +14,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.3.6
-  flutter_tflite: ^1.0.1
+  # flutter_tflite: ^1.0.1
   image: ^3.3.0
   image_cropper: ^4.0.1
   image_picker: ^0.8.7+4
   meta: ^1.8.0
   sharedor: 
     path: ../sharedor
-  # tflite: ^1.1.2
+  tflite: ^1.1.2
     
 dev_dependencies:
   flutter_test:
