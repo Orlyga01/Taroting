@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:sharedor/sharedor.dart';
+import 'package:taroting/Interpretation/interpretation_controller.dart';
+import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
@@ -119,6 +121,26 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
             ref.read(watchOpenCamera.notifier).setCameraState = false;
             ref.read(watchSpread.notifier).spreadUpdate =
                 SpreadController().currentSpread;
+            ref.read(watchCard.notifier).cardLoaded =
+                TCardController().currentCard;
+            if (TCardController().currentCard != null) {
+              String ans;
+              try {
+                await InterpretationController().getAnswer(
+                    TCardController().currentCard!,
+                    SpreadController().currentSpread.currentType!);
+                CardInterpretation? answer = InterpretationController()
+                    .getInterpretationFromCard(TCardController().currentCard!,
+                        SpreadController().currentSpread.currentType!);
+                ans = answer != null
+                    ? answer.interpretation
+                    : "Problem getting the interpretation";
+                ref.read(watchAnswer.notifier).state = ans;
+              } catch (e) {
+                ans = "Problem getting the interpretation";
+                ref.read(watchAnswer.notifier).state = ans;
+              }
+            }
           } else {
             // ignore: use_build_context_synchronously
             showDialog(
