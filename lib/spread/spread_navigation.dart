@@ -83,21 +83,20 @@ class SpreadNavigation extends StatelessWidget {
                     ));
               })),
           Wrap(
-            spacing: 10.0,
-            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 10,
             children: [
               const Text(
                 'Select a random card',
               ),
+
               SwitchTR(
                 isRandom: spread.isRandom ?? true,
                 onChange: (bool? value) {
                   spread.isRandom = value;
-                },
-              ),
-            ],
-          ),
-        ],
+              Switch(
+                value: spread.isRandom ?? true,
+                onChanged: (bool? value) {
+                  spread.isRandom = value ?? false;
       );
     });
   }

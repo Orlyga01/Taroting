@@ -38,16 +38,15 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
               : Stack(
                   alignment: Alignment.bottomCenter,
                   children: [
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: CameraPreview(controller),
-                    ),
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: Image.asset(
-                        'assets/camera-overlay-conceptcoder.png',
-                        fit: BoxFit.cover,
-                      ),
+                    Transform.scale(
+                        alignment: Alignment.bottomCenter,
+                        scale: 1 /
+                            (controller.value.aspectRatio *
+                                MediaQuery.of(context).size.aspectRatio),
+                        child: CameraPreview(controller)),
+                    Image.asset(
+                      'assets/camera-overlay-conceptcoder.png',
+                      fit: BoxFit.cover,
                     ),
                     InkWell(
                       onTap: () => onTakePicture(),
@@ -84,13 +83,35 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   void onTakePicture() async {
     await controller.takePicture().then((XFile xfile) async {
       if (mounted) {
+        Size size = MediaQuery.of(context).size;
         if (xfile != null) {
           final bytes = await xfile.readAsBytes();
           //   final image = img.decodeImage(bytes);
-          File? cr = await cropImage(xfile.path, 0.22, 0.24, 0.55, 0.52);
+          File? cr = await cropImage(xfile.path, 0.38 * size.width,
+              0.24 * size.height, 0.4 * size.width, 0.3 * size.height);
+          //TCard? card;
+          // ???  ref.read(xFileProvider.notifier).state = cr;
+          showDialog(
+              context: context,
+              builder: (_) {
+                // return object of type Dialog
 
+                return AlertDialog(
+                    title: Column(children: [
+                      Image.file(File(xfile.path)),
+                      Image.file(cr!)
+                    ]),
+                    actions: [
+                      OutlinedButton(
+                          key: const Key("alertOKBtn"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("OK"))
+                    ]);
+              });
           TCard? card = await TCardController().identifyTCard(cr!.path);
-          //???  ref.read(xFileProvider.notifier).state = cr;
+
           if (card != null) {
             await SpreadController().loadCard(card: card);
 
