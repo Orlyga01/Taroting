@@ -82,16 +82,21 @@ class SpreadNavigation extends StatelessWidget {
                       ],
                     ));
               })),
-          CheckboxListTile(
-              title: const Text(
+          Wrap(
+            spacing: 10.0,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              const Text(
                 'Select a random card',
               ),
-              value: spread.isRandom ?? true,
-              onChanged: (bool? value) {}
-              //   widget.spread.isRandom = value ?? false;
-              //   setState(() {});
-              // },
+              SwitchTR(
+                isRandom: spread.isRandom ?? true,
+                onChange: (bool? value) {
+                  spread.isRandom = value;
+                },
               ),
+            ],
+          ),
         ],
       );
     });
@@ -118,5 +123,38 @@ class SpreadNavigation extends StatelessWidget {
         ref.read(watchAnswer.notifier).state = ans;
       }
     }
+  }
+}
+
+class SwitchTR extends StatefulWidget {
+  Function(bool val) onChange;
+  bool? isRandom;
+  SwitchTR({this.isRandom, required this.onChange, super.key});
+
+  @override
+  State<SwitchTR> createState() => _SwitchTRState();
+}
+
+class _SwitchTRState extends State<SwitchTR> {
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10.0,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        const Text(
+          'Select a random card',
+        ),
+        Switch(
+          value: widget.isRandom ?? true,
+          onChanged: (bool value) {
+            widget.onChange(value);
+            setState(() {
+              widget.isRandom = value;
+            });
+          },
+        ),
+      ],
+    );
   }
 }
