@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
+import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
 
@@ -16,6 +17,7 @@ class InterpretationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    card = TCardController().currentCard;
     // TCard? card = TCardController().currentCard;
     return card == null || iType == null
         ? const SizedBox.shrink()
