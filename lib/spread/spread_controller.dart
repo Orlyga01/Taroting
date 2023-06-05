@@ -22,8 +22,8 @@ class SpreadController {
       card = await TCardController().getRandomCard(
         currentSpread.getCardIds(),
       );
-     
-      updateSpread(card!);
+     if(card!= null)
+      updateSpread(card);
     } else {}
     return card;
   }

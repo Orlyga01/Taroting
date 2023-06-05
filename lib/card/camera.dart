@@ -19,6 +19,7 @@ class CaptureCameraWidget extends ConsumerStatefulWidget {
   static const routeName = 'home-screen';
   late img.Image cropped;
   bool? loaded = false;
+  bool showCamera = false;
   @override
   _CaptureCameraWidgetState createState() => _CaptureCameraWidgetState();
 }
@@ -30,46 +31,48 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   @override
   Widget build(BuildContext context) {
     final xFileState = ref.watch(xFileProvider);
-
-    return FutureBuilder(
-      future: initializationCamera(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return loaded
-              ? Image.file(File(xFileState.path))
-              : Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    Transform.scale(
+    widget.showCamera = ref.watch(watchOpenCamera);
+    return widget.showCamera == false
+        ? const SizedBox.shrink()
+        : FutureBuilder(
+            future: initializationCamera(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return loaded
+                    ? Image.file(File(xFileState.path))
+                    : Stack(
                         alignment: Alignment.bottomCenter,
-                        scale: 1 /
-                            (controller.value.aspectRatio *
-                                MediaQuery.of(context).size.aspectRatio),
-                        child: CameraPreview(controller)),
-                    Image.asset(
-                      'assets/camera-overlay-conceptcoder.png',
-                      fit: BoxFit.cover,
-                    ),
-                    InkWell(
-                      onTap: () => onTakePicture(),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        child: CircleAvatar(
-                            radius: 30.0,
-                            backgroundColor: Colors.green,
-                            child: Icon(Icons.camera_alt_outlined,
-                                color: Colors.white)),
-                      ),
-                    ),
-                  ],
+                        children: [
+                          Transform.scale(
+                              alignment: Alignment.bottomCenter,
+                              scale: 1 /
+                                  (controller.value.aspectRatio *
+                                      MediaQuery.of(context).size.aspectRatio),
+                              child: CameraPreview(controller)),
+                          Image.asset(
+                            'assets/camera-overlay-conceptcoder.png',
+                            fit: BoxFit.cover,
+                          ),
+                          InkWell(
+                            onTap: () => onTakePicture(),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20.0),
+                              child: CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundColor: Colors.green,
+                                  child: Icon(Icons.camera_alt_outlined,
+                                      color: Colors.white)),
+                            ),
+                          ),
+                        ],
+                      );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-        } else {
-          return const Center(
-            child: CircularProgressIndicator(),
+              }
+            },
           );
-        }
-      },
-    );
   }
 
   Future<void> initializationCamera() async {
