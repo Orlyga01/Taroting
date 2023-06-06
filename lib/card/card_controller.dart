@@ -1,14 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
+import 'package:path/path.dart' as Path;
+
 // import 'package:tflite/tflite.dart';
 
 class TCardController {
@@ -21,7 +23,6 @@ class TCardController {
   }
 
   Future<TCard?> identifyTCard(String imagePath) async {
-    if (imagePath == null) return null;
     String? res = await Tflite.loadModel(
         model: "assets/model_unquant.tflite",
         labels: "assets/labels.txt",
@@ -41,6 +42,7 @@ class TCardController {
     if (output != null && output.isNotEmpty) {
       return getCard(output[0]["label"].split(" ")[1]);
     } else {
+      uploadFile(imagePath);
       throw ("not found");
     }
   }
@@ -111,5 +113,21 @@ class TCardController {
     randomNumber = random.nextInt(7);
     position = position + randomNumber;
     return serie + position.toString();
+  }
+
+  Future<String> uploadFile(String imagepath) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    String finalUrl = "";
+    //if person is deleted - need to clear this image - or when image changes - we need to remove this image
+    Reference ref =
+        storage.ref().child('notFound/${Path.basename(imagepath)}}');
+    UploadTask uploadTask = ref.putFile(File(imagepath));
+    await uploadTask;
+    await ref.getDownloadURL().then((fileURL) {
+      finalUrl = fileURL;
+    }).catchError((onError) {
+      throw onError;
+    });
+    return finalUrl;
   }
 }

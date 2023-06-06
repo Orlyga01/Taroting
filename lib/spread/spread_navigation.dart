@@ -86,11 +86,14 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                   ],
                 ));
           })),
-      SwitchTR(
-          isRandom: spread.isRandom ?? true,
-          onChange: (bool? value) {
-            spread.isRandom = value;
-          })
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: SwitchTR(
+            isRandom: spread.isRandom ?? false,
+            onChange: (bool? value) {
+              spread.isRandom = value;
+            }),
+      )
     ]);
   }
 }
@@ -138,7 +141,7 @@ class _SwitchTRState extends State<SwitchTR> {
           'Select a random card',
         ),
         Switch(
-          value: widget.isRandom ?? true,
+          value: widget.isRandom ?? false,
           onChanged: (bool value) {
             widget.onChange(value);
             setState(() {

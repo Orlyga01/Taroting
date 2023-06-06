@@ -13,7 +13,7 @@ import 'package:taroting/spread/spread_navigation.dart';
 
 class SpreadScreen extends StatelessWidget {
   SpreadScreen({super.key});
-  SpreadModel spread = SpreadModel.init..isRandom = true;
+  SpreadModel spread = SpreadModel.init..isRandom = false;
 
   InterpretationType? iType;
   bool showCamera = false;
