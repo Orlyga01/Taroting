@@ -4,14 +4,14 @@ import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tflite/flutter_tflite.dart';
+// import 'package:flutter_tflite/flutter_tflite.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
 import 'package:path/path.dart' as Path;
 
-// import 'package:tflite/tflite.dart';
+import 'package:tflite/tflite.dart';
 
 class TCardController {
   late String cardid;
@@ -39,10 +39,14 @@ class TCardController {
       imageMean: 127.5,
       imageStd: 127.5,
     );
+    if (output != null && (output.isEmpty || output[0]["confidence"] < 0.6)) {
+      String cardfound =
+          output.length > 0 ? output[0]["label"].split(" ")[1] : "";
+      uploadFile(imagePath, cardfound);
+    }
     if (output != null && output.isNotEmpty) {
       return getCard(output[0]["label"].split(" ")[1]);
     } else {
-      uploadFile(imagePath);
       throw ("not found");
     }
   }
@@ -115,12 +119,12 @@ class TCardController {
     return serie + position.toString();
   }
 
-  Future<String> uploadFile(String imagepath) async {
+  Future<String> uploadFile(String imagepath, String cardfound) async {
     FirebaseStorage storage = FirebaseStorage.instance;
-    String finalUrl = "";
+    String finalUrl = DateTime.now.toString() + cardfound;
+
     //if person is deleted - need to clear this image - or when image changes - we need to remove this image
-    Reference ref =
-        storage.ref().child('notFound/${Path.basename(imagepath)}}');
+    Reference ref = storage.ref().child('notFound/$finalUrl');
     UploadTask uploadTask = ref.putFile(File(imagepath));
     await uploadTask;
     await ref.getDownloadURL().then((fileURL) {

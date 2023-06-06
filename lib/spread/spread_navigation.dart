@@ -45,7 +45,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
 
                   if (!full) {
                     SpreadController().currentSpread.currentType = newType;
-                    if (spread.isRandom != false) {
+                    if (spread.isRandom == true) {
                       await loadCard(ref);
 
                       //      ref.read(watchSpread.notifier).spreadUpdate = spread;
