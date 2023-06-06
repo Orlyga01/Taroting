@@ -3,16 +3,18 @@ import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
+import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SpreadNavigation extends ConsumerStatefulWidget {
-  const SpreadNavigation({super.key});
+  SpreadNavigation({super.key});
 
   @override
   ConsumerState<SpreadNavigation> createState() => _SpreadNavigationState();
+  bool showCamera = false;
 }
 
 class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
@@ -21,104 +23,82 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
     BuildContext context,
   ) {
     SpreadModel spread = SpreadController().currentSpread;
-    // widget.spread = ref.watch(watchSpreadChange).getSpread;
+    widget.showCamera = ref.watch(watchOpenCamera);
 
-    //iType = widget.spread.currentType;
+    return widget.showCamera
+        ? const SizedBox.shrink()
+        : Column(children: [
+            if (spread.currentType == null)
+              const Padding(
+                  padding: EdgeInsets.only(top: 150, bottom: 40),
+                  child: Text(
+                    "Position in the Spread:",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(spread.results!.length, (index) {
+                  InterpretationType newType =
+                      spread.results!.keys.elementAt(index);
+                  bool isCurrent =
+                      newType == spread.currentType && !spread.isIninitState;
+                  bool full = spread.results![newType]!.id.isNotEmpty;
+                  return ElevatedButton(
+                      onPressed: () async {
+                        bool isinnerCurrent = newType == spread.currentType &&
+                            !spread.isIninitState;
+                        if (isinnerCurrent) return;
 
-    return Column(children: [
-      if (spread.isIninitState)
-        const Padding(
-            padding: EdgeInsets.only(top: 150, bottom: 40),
-            child: Text(
-              "Position in the Spread:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            )),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(spread.results!.length, (index) {
-            InterpretationType newType = spread.results!.keys.elementAt(index);
-            bool isCurrent = newType == spread.currentType;
-            bool full = spread.results![newType]!.id.isNotEmpty;
-            return ElevatedButton(
-                onPressed: () async {
-                  if (isCurrent) return;
-
-                  if (!full) {
-                    SpreadController().currentSpread.currentType = newType;
-                    if (spread.isRandom == true) {
-                      await loadCard(ref);
-
-                      //      ref.read(watchSpread.notifier).spreadUpdate = spread;
-                    } else {
-                      ref.read(watchOpenCamera.notifier).setCameraState = true;
-                    }
-                  } else {
-                    SpreadController().setCurrentType = newType;
-                    await loadCard(ref);
-                  }
-                  setState(() {});
-                  //    ref.read(watchSpreadChange).switchToExistingType(newType);
-                  // }
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isCurrent ? Colors.transparent : Colors.white,
-                    elevation: isCurrent ? 0 : 4.0,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 8)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    full && !isCurrent
-                        ? const Padding(
-                            padding: EdgeInsets.only(bottom: 8.0),
-                            child: Icon(Icons.check,
-                                color: Colors.green, size: 20),
-                          )
-                        : const SizedBox.shrink(),
-                    Text(
-                      enumToString(
-                          spread.results!.keys.elementAt(index).toString()),
-                      // .capitalize(),
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ],
-                ));
-          })),
-      Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: SwitchTR(
-            isRandom: spread.isRandom ?? false,
-            onChange: (bool? value) {
-              spread.isRandom = value;
-            }),
-      )
-    ]);
+                        TCard? cr = await SpreadController()
+                            .loadCard( iType: newType);
+                        if (spread.isRandom != true && cr == null) {
+                          //if there is no card yet and its not random then we need to show the camera
+                          ref.read(watchOpenCamera.notifier).setCameraState =
+                              true;
+                        } else {
+                          ref.read(watchCard.notifier).cardLoaded =
+                              TCardController().currentCard;
+                        }
+                        setState(() {});
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              isCurrent ? Colors.transparent : Colors.white,
+                          elevation: isCurrent ? 0 : 4.0,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: full ? 10 : 20)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          full && !isCurrent
+                              ? const Padding(
+                                  padding: EdgeInsets.only(bottom: 8.0),
+                                  child: Icon(Icons.check,
+                                      color: Colors.green, size: 20),
+                                )
+                              : const SizedBox.shrink(),
+                          Text(
+                            enumToString(spread.results!.keys
+                                .elementAt(index)
+                                .toString()),
+                            // .capitalize(),
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ],
+                      ));
+                })),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: SwitchTR(
+                  isRandom: spread.isRandom ?? false,
+                  onChange: (bool? value) {
+                    SpreadController().isRandom = value ?? false;
+                    spread.isRandom = value;
+                  }),
+            )
+          ]);
   }
-}
-
-loadCard(WidgetRef ref) async {
-  await SpreadController().loadCard(isRandom: true);
-  ref.read(watchCard.notifier).cardLoaded = TCardController().currentCard;
-
-  // if (TCardController().currentCard != null) {
-  //   String ans;
-  //   try {
-  //     await InterpretationController().getAnswer(TCardController().currentCard!,
-  //         SpreadController().currentSpread.currentType!);
-  //     CardInterpretation? answer = InterpretationController()
-  //         .getInterpretationFromCard(TCardController().currentCard!,
-  //             SpreadController().currentSpread.currentType!);
-  //     ans = answer != null
-  //         ? answer.interpretation
-  //         : "Problem getting the interpretation";
-  //     ref.read(watchAnswer.notifier).state = ans;
-  //   } catch (e) {
-  //     ans = "Problem getting the interpretation";
-  //     ref.read(watchAnswer.notifier).state = ans;
-  //   }
-  // }
 }
 
 class SwitchTR extends StatefulWidget {

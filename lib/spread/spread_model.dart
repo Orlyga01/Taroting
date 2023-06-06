@@ -7,8 +7,9 @@ class SpreadModel {
   bool? isRandom;
   InterpretationType? currentType;
 
-  SpreadModel({required this.type, this.results});
-  static SpreadModel get init => SpreadModel(type: SpreadType.ppf, results: {
+  SpreadModel({required this.type, this.results, this.isRandom});
+  static SpreadModel get init =>
+      SpreadModel(isRandom: false, type: SpreadType.ppf, results: {
         InterpretationType.subject: TCard.empty,
         InterpretationType.past: TCard.empty,
         InterpretationType.present: TCard.empty,

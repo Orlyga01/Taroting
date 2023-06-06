@@ -17,14 +17,27 @@ class SpreadController {
     TCardController().currentCard = card;
   }
 
-  Future<TCard?> loadCard({bool? isRandom = false, TCard? card}) async {
-    if (isRandom == true) {
-      card = await TCardController().getRandomCard(
-        currentSpread.getCardIds(),
-      );
-     if(card!= null)
-      updateSpread(card);
-    } else {}
+  set isRandom(bool isRandom) => _currentSpread.isRandom = isRandom;
+  TCard? getCardInSpread() {
+    bool hasCard =
+        _currentSpread.results![_currentSpread.currentType]!.id.isNotEmpty;
+    return hasCard ? _currentSpread.results![_currentSpread.currentType] : null;
+  }
+
+  Future<TCard?> loadCard(
+      { TCard? card, InterpretationType? iType}) async {
+    _currentSpread.currentType = iType ?? _currentSpread.currentType;
+    card = getCardInSpread();
+    if (card != null) {
+      TCardController().switchCurrentCard = card;
+    } else {
+      if (_currentSpread.isRandom == true) {
+        card = await TCardController().getRandomCard(
+          _currentSpread.getCardIds(),
+        );
+        if (card != null) updateSpread(card);
+      }
+    }
     return card;
   }
 

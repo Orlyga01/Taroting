@@ -21,7 +21,7 @@ class SpreadScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
-      iType = SpreadController().iType;
+      showCamera = ref.watch(watchOpenCamera);
 
       List<Widget> children = getListWidgets();
       return Scaffold(
@@ -40,14 +40,15 @@ class SpreadScreen extends StatelessWidget {
     return [
       CaptureCameraWidget(),
       SpreadNavigation(),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0),
-        child: Container(
-            width: double.infinity,
-            height: 160, // Adjust the height according to your image size
-            child: CardWidget(card: spread.results![iType])),
-      ),
-      InterpretationWidget()
+      if (showCamera == false)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
+          child: Container(
+              width: double.infinity,
+              height: 160, // Adjust the height according to your image size
+              child: CardWidget(card: spread.results![iType])),
+        ),
+      if (showCamera == false) InterpretationWidget()
     ];
   }
 }

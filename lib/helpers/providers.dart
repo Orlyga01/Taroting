@@ -8,19 +8,19 @@ import 'package:taroting/card/card_model.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 
-final watchSpread =
-    NotifierProvider<SpreadState, SpreadModel?>(() => SpreadState());
+// final watchSpread =
+//     NotifierProvider<SpreadState, SpreadModel?>(() => SpreadState());
 
-class SpreadState extends Notifier<SpreadModel?> {
-  @override
-  SpreadModel? build() {
-    SpreadModel.init;
-  }
+// class SpreadState extends Notifier<SpreadModel?> {
+//   @override
+//   SpreadModel? build() {
+//     SpreadModel.init;
+//   }
 
-  void set spreadUpdate(SpreadModel spread) =>
-      state = SpreadController().currentSpread;
-  // String get getAnswer => _answer;
-}
+//   void set spreadUpdate(SpreadModel spread) =>
+//       state = SpreadController().currentSpread;
+//   // String get getAnswer => _answer;
+// }
 
 final watchForAnser =
     NotifierProvider<AnswerState, String?>(() => AnswerState());

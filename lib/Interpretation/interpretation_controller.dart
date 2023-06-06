@@ -1,16 +1,12 @@
 import 'dart:async';
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_repository.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
-import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/keys.dart';
-import 'package:taroting/spread/spread_model.dart';
 
 class InterpretationController {
   late String? cardid;

@@ -6,11 +6,14 @@ import 'package:taroting/helpers/providers.dart';
 class CardWidget extends ConsumerWidget {
   TCard? card;
   CardWidget({super.key, this.card});
+  //bool showCamera = false;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final card = ref.watch(watchCard);
-    return card == null
+    // showCamera = ref.watch(watchOpenCamera);
+
+    return card == null // || showCamera == true
         ? SizedBox.shrink()
         : Column(
             crossAxisAlignment: CrossAxisAlignment.start,

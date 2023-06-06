@@ -64,6 +64,23 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                                       color: Colors.white)),
                             ),
                           ),
+                          PositionedDirectional(
+                            start: 0,
+                            top: 0,
+                            child: InkWell(
+                              onTap: () => ref
+                                  .read(watchOpenCamera.notifier)
+                                  .setCameraState = false,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
+                                child: CircleAvatar(
+                                    radius: 30.0,
+                                    backgroundColor: Colors.transparent,
+                                    child:
+                                        Icon(Icons.close, color: Colors.black)),
+                              ),
+                            ),
+                          ),
                         ],
                       );
               } else {
@@ -94,38 +111,17 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
           //   final image = img.decodeImage(bytes);
           File? cr = await cropImage(xfile.path, 0.38 * size.width,
               0.24 * size.height, 0.4 * size.width, 0.3 * size.height);
-          //TCard? card;
-          // ???  ref.read(xFileProvider.notifier).state = cr;
-          // showDialog(
-          //     context: context,
-          //     builder: (_) {
-          //       // return object of type Dialog
 
-          //       return AlertDialog(
-          //           title: Column(children: [
-          //             Image.file(File(xfile.path)),
-          //             Image.file(cr!)
-          //           ]),
-          //           actions: [
-          //             OutlinedButton(
-          //                 key: const Key("alertOKBtn"),
-          //                 onPressed: () {
-          //                   Navigator.of(context).pop();
-          //                 },
-          //                 child: const Text("OK"))
-          //           ]);
-          //
-          //    });
           try {
             TCard? card = await TCardController().identifyTCard(cr!.path);
-
+            card = TCardController().currentCard;
             if (card != null) {
-              await SpreadController().loadCard(card: card);
+              SpreadController().updateSpread(card);
+              await SpreadController().loadCard(
+                card: card,
+              );
 
-              ref.read(watchCard.notifier).cardLoaded = card;
               ref.read(watchOpenCamera.notifier).setCameraState = false;
-              ref.read(watchSpread.notifier).spreadUpdate =
-                  SpreadController().currentSpread;
               ref.read(watchCard.notifier).cardLoaded =
                   TCardController().currentCard;
               if (TCardController().currentCard != null) {
