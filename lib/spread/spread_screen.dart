@@ -4,12 +4,12 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/Interpretation/interpretation_widget.dart';
 import 'package:taroting/card/camera.dart';
 import 'package:taroting/card/card_controller.dart';
-import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_widget.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:taroting/spread/spread_navigation.dart';
+import 'package:taroting/card/select_card_widget.dart';
 
 class SpreadScreen extends StatelessWidget {
   SpreadScreen({super.key});
@@ -23,7 +23,7 @@ class SpreadScreen extends StatelessWidget {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
       showCamera = ref.watch(watchOpenCamera);
 
-      List<Widget> children = getListWidgets();
+      List<Widget> children = getListWidgets(context);
       return Scaffold(
           body: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -36,19 +36,62 @@ class SpreadScreen extends StatelessWidget {
     });
   }
 
-  List<Widget> getListWidgets() {
-    return [
+  List<Widget> getListWidgets(context) {
+    List<Widget> list;
+    list = [
       CaptureCameraWidget(),
       SpreadNavigation(),
-      if (showCamera == false)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Container(
-              width: double.infinity,
-              height: 160, // Adjust the height according to your image size
-              child: CardWidget(card: spread.results![iType])),
-        ),
-      if (showCamera == false) InterpretationWidget()
     ];
+    if (showCamera == false) {
+      if (true) {
+        //TCardController().currentCard != null ) {
+        list = list +
+            [
+              Container(
+                color: Colors.grey.shade200,
+                padding: EdgeInsets.all(8),
+                child: Wrap(
+                  children: [
+                    Text("This is not the correct card?"),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) {
+                              // return object of type Dialog
+
+                              return AlertDialog(
+                                title: SelectCardWidget(),
+                              );
+                            });
+                      },
+                      child: Text("Get the card",
+                          style: const TextStyle(color: Colors.black)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        elevation: 4.0,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ];
+      }
+      list = list +
+          [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Container(
+                  width: double.infinity,
+                  height: 160, // Adjust the height according to your image size
+                  child: CardWidget(card: spread.results![iType])),
+            ),
+            InterpretationWidget()
+          ];
+    }
+    return list;
   }
 }

@@ -26,7 +26,7 @@ class CardWidget extends ConsumerWidget {
                     // width: double.infinity,
                     // height: 200, // Adjust the height according to your image size
                     child: Image.asset(
-                      'assets/cards/${card!.img}', // Replace with your image path
+                      'assets/cards/${card.img}', // Replace with your image path
                       fit: BoxFit.contain,
                     ),
                   ),

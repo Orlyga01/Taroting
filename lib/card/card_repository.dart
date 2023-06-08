@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sharedor/export_common.dart';
 import 'card_model.dart';
 
 class FirebaseTCardsRepository {
@@ -25,6 +26,23 @@ class FirebaseTCardsRepository {
         return TCard.fromJson(data);
       }
       return null;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<TCard>?> getListBySuit(Suit suit) async {
+    String ssuit = enumToString(suit.toString());
+
+    try {
+      List<TCard> documentSnapshot = await _cardDoc
+          .where("suit", isEqualTo: ssuit.capitalize())
+          .get()
+          .then((value) => value.docs
+              .map((doc) => TCard.fromJson(doc.data()..["id"] = doc.id))
+              .toList());
+
+      return documentSnapshot;
     } catch (e) {
       rethrow;
     }

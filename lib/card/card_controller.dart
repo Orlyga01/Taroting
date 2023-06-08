@@ -57,6 +57,10 @@ class TCardController {
     }
   }
 
+  Future<List<TCard>?> getCardsBySuit(Suit suit) async {
+    return FirebaseTCardsRepository().getListBySuit(suit);
+  }
+
   Future<TCard?> getCard(String cardid) async {
     TCard? card = await FirebaseTCardsRepository().get(cardid);
     if (card != null) {

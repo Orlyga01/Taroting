@@ -73,7 +73,7 @@ class TCard {
   // }
 }
 
-enum Suit { cups, pentacles, swords, trump, wands }
+enum Suit { cups, pentacles, swords, wands, trump }
 
 class GenericInfoEnum {
   final String? name;

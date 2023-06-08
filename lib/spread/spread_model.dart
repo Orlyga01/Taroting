@@ -6,6 +6,7 @@ class SpreadModel {
   Map<InterpretationType, TCard>? results;
   bool? isRandom;
   InterpretationType? currentType;
+  InterpretationType? prevType;
 
   SpreadModel({required this.type, this.results, this.isRandom});
   static SpreadModel get init =>

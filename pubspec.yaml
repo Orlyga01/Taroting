@@ -43,6 +43,7 @@ flutter:
     - assets/model_unquant.tflite
     - assets/cards/
     - assets/camera-overlay-conceptcoder.png
+    - assets/images/
 dependency_overrides:
     firebase_core_platform_interface: 4.5.1
 

@@ -68,9 +68,13 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                             start: 0,
                             top: 0,
                             child: InkWell(
-                              onTap: () => ref
-                                  .read(watchOpenCamera.notifier)
-                                  .setCameraState = false,
+                              onTap: () {
+                                SpreadController().setCurrentType =
+                                    SpreadController().currentSpread.prevType;
+                                ref
+                                    .read(watchOpenCamera.notifier)
+                                    .setCameraState = false;
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 20.0),
                                 child: CircleAvatar(
@@ -115,6 +119,7 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
           try {
             TCard? card = await TCardController().identifyTCard(cr!.path);
             card = TCardController().currentCard;
+            SpreadController().saveCroppedImg = cr.path;
             if (card != null) {
               SpreadController().updateSpread(card);
               await SpreadController().loadCard(
