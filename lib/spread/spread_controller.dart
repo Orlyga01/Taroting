@@ -6,7 +6,7 @@ import 'package:taroting/spread/spread_model.dart';
 
 class SpreadController {
   late SpreadModel _currentSpread = SpreadModel.init;
-  String _photoImagePath = "";
+  String? _photoImagePath = "";
 
   static final SpreadController _cardC = SpreadController._internal();
   SpreadController._internal();
@@ -14,12 +14,17 @@ class SpreadController {
     return _cardC;
   }
   void updateSpread(TCard card) {
+    // if _currentSpread.prevType != null
     _currentSpread.results![_currentSpread.currentType!] = card;
     TCardController().currentCard = card;
   }
 
-  set saveCroppedImg(String path) => _photoImagePath = path;
+  set saveCroppedImg(String? path) => _photoImagePath = path;
+  String?  get savedCroppedImg => _photoImagePath ;
+
   set isRandom(bool isRandom) => _currentSpread.isRandom = isRandom;
+  bool get isRandom => _currentSpread.isRandom ?? false;
+
   TCard? getCardInSpread() {
     bool hasCard =
         _currentSpread.results![_currentSpread.currentType]!.id.isNotEmpty;

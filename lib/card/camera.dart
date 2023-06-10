@@ -131,21 +131,21 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                   TCardController().currentCard;
               if (TCardController().currentCard != null) {
                 String ans;
-                try {
-                  await InterpretationController().getAnswer(
-                      TCardController().currentCard!,
-                      SpreadController().currentSpread.currentType!);
-                  CardInterpretation? answer = InterpretationController()
-                      .getInterpretationFromCard(TCardController().currentCard!,
-                          SpreadController().currentSpread.currentType!);
-                  ans = answer != null
-                      ? answer.interpretation
-                      : "Problem getting the interpretation";
-                  ref.read(watchAnswer.notifier).state = ans;
-                } catch (e) {
-                  ans = "Problem getting the interpretation";
-                  ref.read(watchAnswer.notifier).state = ans;
-                }
+                // try {
+                //   await InterpretationController().getAnswer(
+                //       TCardController().currentCard!,
+                //       SpreadController().currentSpread.currentType!);
+                //   CardInterpretation? answer = InterpretationController()
+                //       .getInterpretationFromCard(TCardController().currentCard!,
+                //           SpreadController().currentSpread.currentType!);
+                //   ans = answer != null
+                //       ? answer.interpretation
+                //       : "Problem getting the interpretation";
+                //   ref.read(watchAnswer.notifier).state = ans;
+                // } catch (e) {
+                //   ans = "Problem getting the interpretation";
+                //   ref.read(watchAnswer.notifier).state = ans;
+                // }
               }
             }
           } catch (e) {

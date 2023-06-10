@@ -11,6 +11,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
 import 'package:path/path.dart' as Path;
+import 'package:taroting/spread/spread_controller.dart';
 
 // import 'package:tflite/tflite.dart';
 
@@ -48,7 +49,10 @@ class TCardController {
     if (output != null && (output.isEmpty || output[0]["confidence"] < 0.6)) {
       String cardfound =
           output.length > 0 ? output[0]["label"].split(" ")[1] : "";
-      uploadFile(imagePath, cardfound);
+      String? imgPath = SpreadController().savedCroppedImg;
+      if (imgPath != null) {
+        uploadFile(imgPath, cardfound);
+      }
     }
     if (output != null && output.isNotEmpty) {
       return getCard(output[0]["label"].split(" ")[1]);
@@ -129,10 +133,11 @@ class TCardController {
     return serie + position.toString();
   }
 
-  Future<String> uploadFile(String imagepath, String cardfound) async {
+  Future<String> uploadFile(String cardfound, [String? imagepath]) async {
     FirebaseStorage storage = FirebaseStorage.instance;
-    String finalUrl = DateTime.now().toString() + cardfound;
-
+    String finalUrl = cardfound + DateTime.now().toString();
+    imagepath ??= SpreadController().savedCroppedImg;
+    if (imagepath == null) return "";
     //if person is deleted - need to clear this image - or when image changes - we need to remove this image
     Reference ref = storage.ref().child('notFound/$finalUrl');
     UploadTask uploadTask = ref.putFile(File(imagepath));

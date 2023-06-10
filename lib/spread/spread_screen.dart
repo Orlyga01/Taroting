@@ -43,10 +43,11 @@ class SpreadScreen extends StatelessWidget {
       SpreadNavigation(),
     ];
     if (showCamera == false) {
-      if (true) {
-        //TCardController().currentCard != null ) {
+      if (SpreadController().isRandom != true && TCardController().currentCard != null) {
+        
         list = list +
             [
+              
               Container(
                 color: Colors.grey.shade200,
                 padding: EdgeInsets.all(8),
