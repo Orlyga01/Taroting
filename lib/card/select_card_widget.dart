@@ -96,7 +96,8 @@ class _SelectCardWidgetState extends State<SelectCardWidget> {
                           Center(
                               child: Text(
                                   enumToString(Suit.values[index].toString()),
-                                  style: TextStyle(fontSize: 18))),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.black))),
                           Center(
                             child: Suit.values[index] == Suit.trump
                                 ? ClipRect(

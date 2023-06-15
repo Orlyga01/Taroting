@@ -40,52 +40,71 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return loaded
                     ? Image.file(File(xFileState.path))
-                    : Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Transform.scale(
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            Transform.scale(
+                                alignment: Alignment.bottomCenter,
+                                scale: 1 /
+                                    (controller.value.aspectRatio *
+                                        MediaQuery.of(context)
+                                            .size
+                                            .aspectRatio),
+                                child: CameraPreview(controller)),
+                            Transform.scale(
                               alignment: Alignment.bottomCenter,
                               scale: 1 /
                                   (controller.value.aspectRatio *
-                                      MediaQuery.of(context).size.aspectRatio),
-                              child: CameraPreview(controller)),
-                          Image.asset(
-                            'assets/camera-overlay-conceptcoder.png',
-                            fit: BoxFit.cover,
-                          ),
-                          InkWell(
-                            onTap: () => onTakePicture(),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 20.0),
-                              child: CircleAvatar(
-                                  radius: 30.0,
-                                  backgroundColor: Colors.green,
-                                  child: Icon(Icons.camera_alt_outlined,
-                                      color: Colors.white)),
-                            ),
-                          ),
-                          PositionedDirectional(
-                            start: 0,
-                            top: 0,
-                            child: InkWell(
-                              onTap: () {
-                                SpreadController().setCurrentType =
-                                    SpreadController().currentSpread.prevType;
-                                ref
-                                    .read(watchOpenCamera.notifier)
-                                    .setCameraState = false;
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                child: CircleAvatar(
-                                    radius: 30.0,
-                                    backgroundColor: Colors.transparent,
-                                    child:
-                                        Icon(Icons.close, color: Colors.black)),
+                                      MediaQuery.of(context).size.aspectRatio) *
+                                  0.75,
+                              child: Image.asset(
+                                'assets/camera-overlay-conceptcoder.png',
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                        ],
+                            Column(
+                              children: [
+                                InkWell(
+                                  onTap: () => onTakePicture(),
+                                  child: const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.0),
+                                    child: CircleAvatar(
+                                        radius: 50.0,
+                                        backgroundColor: Colors.green,
+                                        child: Icon(Icons.camera_alt_outlined,
+                                            color: Colors.white)),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: InkWell(
+                                    onTap: () {
+                                      SpreadController().setCurrentType =
+                                          SpreadController()
+                                              .currentSpread
+                                              .prevType;
+                                      ref
+                                          .read(watchOpenCamera.notifier)
+                                          .setCameraState = false;
+                                    },
+                                    child: const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 0),
+                                      child: CircleAvatar(
+                                          radius: 30.0,
+                                          backgroundColor: Colors.white,
+                                          child: Icon(Icons.close,
+                                              color: Colors.black)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       );
               } else {
                 return const Center(
@@ -107,15 +126,25 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   }
 
   void onTakePicture() async {
+    // TCardController().onTimeRun();
+    // return;
     await controller.takePicture().then((XFile xfile) async {
       if (mounted) {
         Size size = MediaQuery.of(context).size;
         if (xfile != null) {
           final bytes = await xfile.readAsBytes();
           //   final image = img.decodeImage(bytes);
-          File? cr = await cropImage(xfile.path, 0.38 * size.width,
-              0.24 * size.height, 0.4 * size.width, 0.3 * size.height);
+          File? cr = await cropImage(
+              xfile.path, 20, 60, size.width - 40, (size.width - 40) * 1.5);
+          // showDialog(
+          //     context: context,
+          //     builder: (_) {
+          //       // return object of type Dialog
 
+          //       return AlertDialog(
+          //         title: Image.file(File(cr!.path)),
+          //       );
+          //     });
           try {
             TCard? card = await TCardController().identifyTCard(cr!.path);
             card = TCardController().currentCard;

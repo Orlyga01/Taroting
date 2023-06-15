@@ -33,10 +33,19 @@ class _InterpretationWidgetState extends ConsumerState<InterpretationWidget> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return Column(children: [
-                  Text(
-                    "${card.name} as the ${enumToString(iType.toString())}",
-                    style: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      // IconButton(
+                      //     onPressed: () {
+                      //       changeLanguage(context);
+                      //     },
+                      //     icon: Icon(Icons.language)),
+                      Text(
+                        "${card.name} as the ${enumToString(iType.toString())}",
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   widget.ans != ""
                       ? Text(widget.ans!)
@@ -61,7 +70,7 @@ class _InterpretationWidgetState extends ConsumerState<InterpretationWidget> {
             ? answer.interpretation
             : "Problem getting the interpretation";
       } catch (e) {
-        widget.ans = "Problem getting the interpretation";
+        widget.ans = "Problem getting the interpretation error: $e";
         // ref.read(watchAnswer.notifier).state = wans;
       }
     }

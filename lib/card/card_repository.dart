@@ -47,4 +47,17 @@ class FirebaseTCardsRepository {
       rethrow;
     }
   }
+
+  Future<List<TCard>?> getAll() async {
+    try {
+      List<TCard> documentSnapshot = await _cardDoc.get().then((value) => value
+          .docs
+          .map((doc) => TCard.fromJson(doc.data()..["id"] = doc.id))
+          .toList());
+
+      return documentSnapshot;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

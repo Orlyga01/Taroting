@@ -6,12 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tflite/flutter_tflite.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
 import 'package:path/path.dart' as Path;
 import 'package:taroting/spread/spread_controller.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 // import 'package:tflite/tflite.dart';
 
@@ -135,6 +137,7 @@ class TCardController {
 
   Future<String> uploadFile(String cardfound, [String? imagepath]) async {
     FirebaseStorage storage = FirebaseStorage.instance;
+
     String finalUrl = cardfound + DateTime.now().toString();
     imagepath ??= SpreadController().savedCroppedImg;
     if (imagepath == null) return "";
@@ -148,5 +151,29 @@ class TCardController {
       throw onError;
     });
     return finalUrl;
+  }
+
+  onTimeRun() async {
+    List<TCard> cards = await FirebaseTCardsRepository().getAll() ?? [];
+    FirebaseStorage storage = FirebaseStorage.instance;
+    for (TCard card in cards) {
+      final ByteData byteData =
+          await rootBundle.load('assets/cards/${card.img}');
+//final byteData = await asset.getByteData();
+
+      File tempFile = File(
+          "${(await getTemporaryDirectory()).path}/${'assets/cards/${card.img}'}");
+      tempFile.create(recursive: true);
+      await tempFile.writeAsBytes(byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+
+      //  file = await tempFile.writeAsBytes(
+      //   byteData.buffer
+      //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),);
+      // final String fullPath = Uri.parse(assetData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes)).toFilePath();
+      Reference ref = storage.ref().child('notFound/${card.id}/${card.img}');
+      UploadTask uploadTask = ref.putFile(File(tempFile.path));
+      await uploadTask;
+    }
   }
 }
