@@ -10,6 +10,7 @@ import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:taroting/spread/spread_navigation.dart';
 import 'package:taroting/card/select_card_widget.dart';
+import 'package:taroting/spread/spread_navigation_full.dart';
 
 class SpreadScreen extends StatelessWidget {
   SpreadScreen({super.key});
@@ -17,6 +18,7 @@ class SpreadScreen extends StatelessWidget {
 
   InterpretationType? iType;
   bool showCamera = false;
+  bool showSpreadFull = true;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class SpreadScreen extends StatelessWidget {
       List<Widget> children = getListWidgets(context);
       return Scaffold(
           body: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(showSpreadFull ? 0 : 20.0),
               child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: children.length,
@@ -40,14 +42,13 @@ class SpreadScreen extends StatelessWidget {
     List<Widget> list;
     list = [
       CaptureCameraWidget(),
-      SpreadNavigation(),
+      showSpreadFull ? SpreadNavigationFull() : SpreadNavigation()
     ];
     if (showCamera == false) {
-      if (SpreadController().isRandom != true && TCardController().currentCard != null) {
-        
+      if (SpreadController().isRandom != true &&
+          TCardController().currentCard != null) {
         list = list +
             [
-              
               Container(
                 color: Colors.grey.shade200,
                 padding: EdgeInsets.all(8),
