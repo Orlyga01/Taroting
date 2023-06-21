@@ -57,7 +57,7 @@ class TCardController {
       }
     }
     if (output != null && output.isNotEmpty) {
-      return getCard(output[0]["label"].split(" ")[1]);
+      return getCard(output[0]["label"].split(" ")[1], SpreadController().iType!);
     } else {
       throw ("not found");
     }
@@ -67,12 +67,12 @@ class TCardController {
     return FirebaseTCardsRepository().getListBySuit(suit);
   }
 
-  Future<TCard?> getCard(String cardid) async {
+  Future<TCard?> getCard(String cardid, InterpretationType iType) async {
     TCard? card = await FirebaseTCardsRepository().get(cardid);
     if (card != null) {
       currentCard = card;
       await loadInterpretations();
-      //  InterpretationController().getAnswer(card, InterpretationType.subject, );
+      InterpretationController().getAnswer(card, iType);
     } else {
       print(cardid + " wasnt able to find in DB");
     }
@@ -91,22 +91,25 @@ class TCardController {
     }
   }
 
+  void reset() {
+    currentCard = null;
+  }
+
   setAnswer(InterpretationType iType, String answer) {
     currentCard!.interpretations?[iType]!.interpretation = answer;
   }
 
-  set addNewInterpretations(CardInterpretation inter) =>
-      currentCard!.interpretations?[inter.interpretationType] = inter;
+
 
   TCard? get card => currentCard;
-  Future<TCard?> getRandomCard(List<String>? exists) async {
+  Future<TCard?> getRandomCard(List<String>? exists, InterpretationType iType) async {
     String? cardid;
     while (cardid == null) {
       cardid = randomCard();
       if (exists != null && exists.contains(cardid)) {
         cardid = null;
       } else {
-        return getCard(cardid);
+        return getCard(cardid, iType);
       }
     }
   }

@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/card/select_card_widget.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_controller.dart';
+import 'package:sharedor/common_functions.dart';
 
 class CardInSpreadWidget extends ConsumerStatefulWidget {
   InterpretationType iType;
-  CardInSpreadWidget({required this.iType, super.key});
+  TCard? card;
+  CardInSpreadWidget({this.card, required this.iType, super.key});
 
   @override
   ConsumerState<CardInSpreadWidget> createState() => _CardInSpreadWidgetState();
@@ -65,17 +68,24 @@ class _CardInSpreadWidgetState extends ConsumerState<CardInSpreadWidget>
   @override
   Widget build(BuildContext context) {
     TCard? watchedcard = ref.watch(watchCard);
-    TCard? card;
-    if (watchedcard != null &&
-        SpreadController().currentSpread.currentType == widget.iType) {
-      card = watchedcard;
-      _isFrontVisible = true;
+    bool? doRefresh = ref.watch(watchRefresh);
+if (doRefresh == true) {
+      widget.card = null;
+      _isFrontVisible = false;
       _animationController.reverse();
     }
-
+    String title = enumToString(widget.iType.toString()).capitalize();
+    if (watchedcard != null &&
+        SpreadController().currentSpread.currentType == widget.iType) {
+      widget.card = watchedcard;
+    }
+    if (widget.card != null && widget.card!.id.isNotEmpty) {
+      _isFrontVisible = true;
+      _animationController.reverse();
+    } 
     return Container(
         width: GlobalParametersTar().screenSize.width / 3.5,
-        height: GlobalParametersTar().screenSize.width / 3.5 * 1.5,
+        height: GlobalParametersTar().screenSize.width / 3.5 * 1.5 + 50,
         child: GestureDetector(
           onTap: _toggleCard,
           child: AnimatedBuilder(
@@ -89,8 +99,8 @@ class _CardInSpreadWidgetState extends ConsumerState<CardInSpreadWidget>
                       ? 0
                       : 3.141592653589793 * _backAnimation.value),
                 child: !_isFrontVisible
-                    ? _buildCardSide(title: "Subject")
-                    : _buildCardSide(card: card),
+                    ? _buildCardSide(title: title)
+                    : _buildCardSide(title: title, card: widget.card),
               );
             },
           ),
@@ -100,9 +110,9 @@ class _CardInSpreadWidgetState extends ConsumerState<CardInSpreadWidget>
   Widget _buildCardSide({String? title, TCard? card}) {
     return Container(
         width: GlobalParametersTar().screenSize.width / 3.5,
-        height: GlobalParametersTar().screenSize.width / 3.5 * 1.5,
+        height: (GlobalParametersTar().screenSize.width / 3.5 * 1.5) + 50,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color.fromARGB(255, 48, 8, 8),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -112,14 +122,67 @@ class _CardInSpreadWidgetState extends ConsumerState<CardInSpreadWidget>
             ),
           ],
         ),
-        child: card != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "assets/cards/${card.img}",
-                  fit: BoxFit.cover,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        title!,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: card != null ? 12 : 16),
+                      ),
+                    ),
+                  ),
+                  if (card != null)
+                    SizedBox(
+                        height: 25,
+                        //  alignment: Alignment.topRight,
+                        child: IconButton(
+                          padding: EdgeInsets.all(0),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) {
+                                  // return object of type Dialog
+                                  SpreadController().currentSpread.currentType =
+                                      widget.iType;
+                                  return AlertDialog(
+                                    title: SelectCardWidget(chooseCard: false),
+                                  );
+                                });
+                          },
+                          icon: Icon(
+                            Icons.refresh_outlined,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ))
+                ],
+              ),
+              if (card != null)
+                GestureDetector(
+                  onTap: () {
+                    SpreadController()
+                        .loadCard(iType: widget.iType, card: card, ref: ref);
+                    ref.read(watchSpreadFullView.notifier).setFullViewState =
+                        false;
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      "assets/cards/${card.img}",
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              )
-            : Text(title!));
+            ],
+          ),
+        ));
   }
 }

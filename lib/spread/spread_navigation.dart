@@ -28,13 +28,6 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
     return widget.showCamera
         ? const SizedBox.shrink()
         : Column(children: [
-            if (spread.currentType == null)
-              const Padding(
-                  padding: EdgeInsets.only(top: 150, bottom: 40),
-                  child: Text(
-                    "Position in the Spread:",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(spread.results!.length, (index) {
@@ -50,14 +43,11 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                         if (isinnerCurrent) return;
 
                         TCard? cr = await SpreadController()
-                            .loadCard( iType: newType);
+                            .loadCard(iType: newType, ref: ref);
                         if (spread.isRandom != true && cr == null) {
                           //if there is no card yet and its not random then we need to show the camera
                           ref.read(watchOpenCamera.notifier).setCameraState =
                               true;
-                        } else {
-                          ref.read(watchCard.notifier).cardLoaded =
-                              TCardController().currentCard;
                         }
                         setState(() {});
                       },
@@ -66,7 +56,7 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                               isCurrent ? Colors.transparent : Colors.white,
                           elevation: isCurrent ? 0 : 4.0,
                           padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: full ? 10 : 20)),
+                              vertical: 5, horizontal: full ? 10 : 20)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -83,20 +73,12 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                                 .elementAt(index)
                                 .toString()),
                             // .capitalize(),
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 11),
                           ),
                         ],
                       ));
                 })),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: SwitchTR(
-                  isRandom: spread.isRandom ?? false,
-                  onChange: (bool? value) {
-                    SpreadController().isRandom = value ?? false;
-                    spread.isRandom = value;
-                  }),
-            )
           ]);
   }
 }

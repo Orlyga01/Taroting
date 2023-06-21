@@ -8,16 +8,18 @@ import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_controller.dart';
 
-class SelectCardWidget extends StatefulWidget {
+class SelectCardWidget extends ConsumerStatefulWidget {
+  bool chooseCard;
   SelectCardWidget({
+    required this.chooseCard,
     super.key,
   });
 
   @override
-  State<SelectCardWidget> createState() => _SelectCardWidgetState();
+  ConsumerState<SelectCardWidget> createState() => _SelectCardWidgetState();
 }
 
-class _SelectCardWidgetState extends State<SelectCardWidget> {
+class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
   @override
   late Map<Suit, List<double>> sizeMap = {};
   List<TCard>? list;
@@ -28,110 +30,179 @@ class _SelectCardWidgetState extends State<SelectCardWidget> {
     sizeMap[Suit.wands] = [70, 80, -180, 0, 1.45];
     sizeMap[Suit.trump] = [80, 70, -10, -70, 1.5];
 
-    return list != null
-        ? Container(
-            color: Colors.white,
-            width: double.maxFinite,
-            height: GlobalParametersTar().screenSize.height * 0.7,
-            child: Consumer(builder: (consumercontext, WidgetRef ref, child) {
-              return GridView.builder(
-                shrinkWrap: true,
-                itemCount: list!.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Number of columns
-                  mainAxisSpacing: 10.0, // Spacing between rows
-                  crossAxisSpacing: 10.0, // Spacing between columns
-                  childAspectRatio:
-                      0.57, // Ratio between the width and height of grid items
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    child: Center(
-                        child: InkWell(
-                      focusColor: Colors.white,
-                      onTap: () async {
-                        TCardController().getCard(list![index].id);
-                        SpreadController().updateSpread(list![index]);
-                        ref.read(watchCard.notifier).cardLoaded =
-                            TCardController().currentCard;
-                        TCardController().uploadFile(list![index].id);
-                        Navigator.of(context).pop();
-                      },
-                      child: Image.asset(
-                        fit: BoxFit.contain,
-                        "assets/cards/${list![index].img}",
-                      ),
-                    )),
-                  );
-                },
-              );
-            }),
-          )
-        : Container(
-            color: Colors.white,
-            width: double.maxFinite,
-            height: GlobalParametersTar().screenSize.height * 0.7,
-            child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: Suit.values.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Number of columns
-                  mainAxisSpacing: 10.0, // Spacing between rows
-                  crossAxisSpacing: 10.0, // Spacing between columns
-                  childAspectRatio:
-                      1, // Ratio between the width and height of grid items
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  List<double> ints = sizeMap[Suit.values[index]]!;
-                  return OutlinedButton(
-                      // style: ButtonStyle(backgroundColor: Colors.white),
-                      onPressed: () async {
-                        list = await TCardController()
-                            .getCardsBySuit(Suit.values[index]);
-                        print(list?.length);
-                        setState(() {});
-                      },
-                      child: Column(
+    return widget.chooseCard != false
+        ? Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            SizedBox(
+              width: (GlobalParametersTar().screenSize.width / 2) - 60,
+              child: ElevatedButton(
+                  onPressed: () {
+                    ref.read(watchOpenCamera.notifier).setCameraState = true;
+                  },
+                  child: Text("Take a new photo", textAlign: TextAlign.center)),
+            ),
+            SizedBox(width: 20),
+            SizedBox(
+              width: (GlobalParametersTar().screenSize.width / 2) - 60,
+              child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.chooseCard = true;
+                    });
+                  },
+                  child: Align(
+                      alignment: Alignment.center,
+                      child: Text("Card is not the same as my photo",
+                          textAlign: TextAlign.center))),
+            )
+          ])
+        : list != null
+            ? Container(
+                color: Colors.white,
+                width: double.maxFinite,
+                height: GlobalParametersTar().screenSize.height * 0.7,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Center(
-                              child: Text(
-                                  enumToString(Suit.values[index].toString()),
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black))),
-                          Center(
-                            child: Suit.values[index] == Suit.trump
-                                ? ClipRect(
-                                    child: SizedBox(
-                                      width: 70,
-                                      height: 80,
-                                      child: Image.asset('assets/cards/m00.jpg',
-                                          fit: BoxFit.contain, scale: 3),
-                                    ),
-                                  )
-                                : ClipRRect(
-                                    child: SizedBox(
-                                    width: ints[
-                                        0], // Define the width of the visible part
-                                    height: ints[
-                                        1], // Define the height of the visible part
-                                    child: Stack(
-                                      children: [
-                                        Positioned(
-                                          left: ints[2],
-                                          top: ints[
-                                              3], // Define the x-position to adjust the visible part
-                                          child: Image.asset(
-                                              'assets/images/suits.jpg',
-                                              fit: BoxFit.cover,
-                                              scale: ints[4]),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
+                          SizedBox(
+                            width: 30,
+                            child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    list = null;
+                                  });
+                                },
+                                icon: Icon(Icons.arrow_back)),
                           ),
+                          SizedBox(width: 25),
+                          Expanded(
+                              child: Text(
+                            "Please select your card:",
+                            style: TextStyle(fontSize: 16),
+                          )),
                         ],
-                      ));
-                }),
-          );
+                      ),
+                    ),
+                    Expanded(
+                      child: Consumer(
+                          builder: (consumercontext, WidgetRef ref, child) {
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: list!.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3, // Number of columns
+                            mainAxisSpacing: 10.0, // Spacing between rows
+                            crossAxisSpacing: 10.0, // Spacing between columns
+                            childAspectRatio:
+                                0.57, // Ratio between the width and height of grid items
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Container(
+                              child: Center(
+                                  child: InkWell(
+                                focusColor: Colors.white,
+                                onTap: () async {
+                                  await SpreadController().loadCard(ref: ref);
+                                  TCardController().uploadFile(list![index].id);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Image.asset(
+                                  fit: BoxFit.contain,
+                                  "assets/cards/${list![index].img}",
+                                ),
+                              )),
+                            );
+                          },
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                color: Colors.white,
+                width: double.maxFinite,
+                height: GlobalParametersTar().screenSize.height * 0.7,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text("Please select your card:"),
+                    ),
+                    Expanded(
+                      child: GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: Suit.values.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Number of columns
+                            mainAxisSpacing: 10.0, // Spacing between rows
+                            crossAxisSpacing: 10.0, // Spacing between columns
+                            childAspectRatio:
+                                1, // Ratio between the width and height of grid items
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            List<double> ints = sizeMap[Suit.values[index]]!;
+                            return OutlinedButton(
+                                // style: ButtonStyle(backgroundColor: Colors.white),
+                                onPressed: () async {
+                                  list = await TCardController()
+                                      .getCardsBySuit(Suit.values[index]);
+                                  print(list?.length);
+                                  setState(() {});
+                                },
+                                child: Column(
+                                  children: [
+                                    Center(
+                                        child: Text(
+                                            enumToString(
+                                                Suit.values[index].toString()),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black))),
+                                    Center(
+                                      child: Suit.values[index] == Suit.trump
+                                          ? ClipRect(
+                                              child: SizedBox(
+                                                width: 70,
+                                                height: 80,
+                                                child: Image.asset(
+                                                    'assets/cards/m00.jpg',
+                                                    fit: BoxFit.contain,
+                                                    scale: 3),
+                                              ),
+                                            )
+                                          : ClipRRect(
+                                              child: SizedBox(
+                                              width: ints[
+                                                  0], // Define the width of the visible part
+                                              height: ints[
+                                                  1], // Define the height of the visible part
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                    left: ints[2],
+                                                    top: ints[
+                                                        3], // Define the x-position to adjust the visible part
+                                                    child: Image.asset(
+                                                        'assets/images/suits.jpg',
+                                                        fit: BoxFit.cover,
+                                                        scale: ints[4]),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                    ),
+                                  ],
+                                ));
+                          }),
+                    ),
+                  ],
+                ),
+              );
   }
 }

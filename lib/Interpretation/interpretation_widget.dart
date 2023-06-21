@@ -68,7 +68,7 @@ class _InterpretationWidgetState extends ConsumerState<InterpretationWidget> {
             .getInterpretationFromCard(TCardController().currentCard!, iType);
         widget.ans = answer != null
             ? answer.interpretation
-            : "Problem getting the interpretation";
+            : "Problem getting the interpretation. Card: ${TCardController().currentCard!.name} Position: ${enumToString(iType.toString())}";
       } catch (e) {
         widget.ans = "Problem getting the interpretation error: $e";
         // ref.read(watchAnswer.notifier).state = wans;

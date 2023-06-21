@@ -31,10 +31,11 @@
               "client_type": 3
             },
             {
-              "client_id": "332126803247-onr9ss6eigia1iv1s87sa8if8ok7eai2.apps.googleusercontent.com",
+              "client_id": "332126803247-o0p127sstb694h3ursq59ioi3k4n6a2a.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.taroting"
+                "bundle_id": "com.taroting",
+                "app_store_id": "6449161052"
               }
             }
           ]

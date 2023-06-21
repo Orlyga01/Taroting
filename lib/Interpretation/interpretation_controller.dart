@@ -14,7 +14,6 @@ import 'package:google_translator/google_translator.dart';
 class InterpretationController {
   late String? cardid;
   String? _answer;
-  InterpretationType? _iType;
   static final InterpretationController _interC =
       InterpretationController._internal();
   InterpretationController._internal();
@@ -23,7 +22,6 @@ class InterpretationController {
     return _interC;
   }
   get answer => _answer;
-  get iType => _iType;
   Future<void> getAnswer(TCard card, InterpretationType iType) async {
     String answer = "";
 
@@ -31,7 +29,6 @@ class InterpretationController {
     if (card.id.isEmpty) return;
     if (savedAnswer != null) {
       _answer = savedAnswer.interpretation;
-      _iType = iType;
       return;
     }
 //if we found in english then just do the translation and save to db
@@ -41,8 +38,7 @@ class InterpretationController {
         try {
           _answer = await TranslationApi.translate(
               enAnswer.interpretation, GlobalParametersTar().language);
-          _iType = iType;
-          afterGetAnswerFromThirdParty(card, _answer!);
+          afterGetAnswerFromThirdParty(card, _answer!, iType: iType);
           return;
         } catch (e) {
           rethrow;
@@ -68,27 +64,39 @@ class InterpretationController {
       if (result != null && result.choices?.first.message?.content != null) {
         //Save the English version
         afterGetAnswerFromThirdParty(
-            card, result.choices!.first.message!.content, "en");
-        _answer = await TranslationApi.translate(
-            result.choices!.first.message!.content,
-            GlobalParametersTar().language);
-        afterGetAnswerFromThirdParty(
-            card, result.choices!.first.message!.content);
+            card, result.choices!.first.message!.content,
+            language: "en", iType: iType);
+        if (GlobalParametersTar().language != "en") {
+          _answer = await TranslationApi.translate(
+              result.choices!.first.message!.content,
+              GlobalParametersTar().language);
+          afterGetAnswerFromThirdParty(
+              card, result.choices!.first.message!.content,
+              iType: iType);
+        }
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  afterGetAnswerFromThirdParty(TCard card, String answer, [String? language]) {
+  afterGetAnswerFromThirdParty(TCard card, String answer,
+      {String? language, InterpretationType? iType}) {
+    InterpretationType niType =
+        iType ?? SpreadController().currentSpread.currentType!;
+    String nLang = language ?? GlobalParametersTar().language;
     CardInterpretation ci = CardInterpretation(
         cardid: card.id,
         interpretation: answer,
-        interpretationType: iType,
-        language: language ?? GlobalParametersTar().language);
+        interpretationType: niType,
+        language: nLang);
     InterpretationRepository().add(ci);
-    TCardController().addNewInterpretations = ci;
-    SpreadController().updateSpread(TCardController().currentCard!);
+    if (nLang == GlobalParametersTar().language) {
+      SpreadController().addNewInterpretations(ci, niType);
+    }
+    if (iType == null) {
+      SpreadController().updateSpread(TCardController().currentCard!);
+    }
     _answer = answer;
   }
 
@@ -96,9 +104,6 @@ class InterpretationController {
     TCard card,
     InterpretationType iType,
   ) {
-    String interId = CardInterpretation.buildId(
-        card.id, iType, GlobalParametersTar().language);
-    print("look for anser in card:  $interId");
     return card.interpretations != null ? card.interpretations![iType] : null;
   }
 
