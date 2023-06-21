@@ -8,14 +8,23 @@ class SpreadModel {
   InterpretationType? currentType;
   InterpretationType? prevType;
 
-  SpreadModel({required this.type, this.results, this.isRandom});
-  static SpreadModel get init =>
-      SpreadModel(isRandom: false, type: SpreadType.ppf, results: {
-        InterpretationType.subject: TCard.empty,
-        InterpretationType.past: TCard.empty,
-        InterpretationType.present: TCard.empty,
-        InterpretationType.future: TCard.empty,
-      });
+  SpreadModel(
+      {required this.type,
+      this.results,
+      this.isRandom,
+      this.currentType,
+      this.prevType});
+  static SpreadModel get init => SpreadModel(
+          isRandom: false,
+          type: SpreadType.ppf,
+          currentType: null,
+          prevType: null,
+          results: {
+            InterpretationType.subject: TCard.empty,
+            InterpretationType.past: TCard.empty,
+            InterpretationType.present: TCard.empty,
+            InterpretationType.future: TCard.empty,
+          });
 
   void setResult(InterpretationType iType, String inter, TCard card) =>
       results![iType] = card;
@@ -26,6 +35,8 @@ class SpreadModel {
     results!.forEach((key, value) => list.add(value.id));
     return list;
   }
+bool get isSpreadFull =>
+      results!.values.every((element) => element.id.isNotEmpty);
 
   bool get isIninitState =>
       results!.values.every((element) => element.id.isEmpty);

@@ -8,20 +8,6 @@ import 'package:taroting/card/card_model.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 
-// final watchSpread =
-//     NotifierProvider<SpreadState, SpreadModel?>(() => SpreadState());
-
-// class SpreadState extends Notifier<SpreadModel?> {
-//   @override
-//   SpreadModel? build() {
-//     SpreadModel.init;
-//   }
-
-//   void set spreadUpdate(SpreadModel spread) =>
-//       state = SpreadController().currentSpread;
-//   // String get getAnswer => _answer;
-// }
-
 final watchForAnser =
     NotifierProvider<AnswerState, String?>(() => AnswerState());
 
@@ -35,8 +21,6 @@ class AnswerState extends Notifier<String?> {
   void setNotifyCardStatusChange(String answer) {
     state = answer;
   }
-
-  // String get getAnswer => _answer;
 }
 
 final watchCard = NotifierProvider<CardState, TCard?>(() => CardState());
@@ -48,9 +32,28 @@ class CardState extends Notifier<TCard?> {
   }
 
   set cardLoaded(TCard? card) => state = card;
-  // String get getAnswer => _answer;
 }
 
+final watchRandom = NotifierProvider<RandomState, bool>(() => RandomState());
+
+class RandomState extends Notifier<bool> {
+  @override
+  bool build() {
+    return false;
+  }
+
+  set processRandom(bool on) => state = on;
+}
+final watchRefresh = NotifierProvider<RefreshState, bool>(() => RefreshState());
+
+class RefreshState extends Notifier<bool> {
+  @override
+  bool build() {
+    return false;
+  }
+
+  set doRefresh(bool on) => state = on;
+}
 final watchOpenCamera =
     NotifierProvider<CameraState, bool>(() => CameraState());
 
@@ -61,9 +64,20 @@ class CameraState extends Notifier<bool> {
   }
 
   set setCameraState(bool on) => state = on;
-  // String get getAnswer => _answer;
 }
 
 final watchAnswer = StateProvider<String>((ref) => "");
 
 List<CameraDescription> _cameras = [];
+
+final watchSpreadFullView =
+    NotifierProvider<FullViewStateState, bool>(() => FullViewStateState());
+
+class FullViewStateState extends Notifier<bool> {
+  @override
+  bool build() {
+    return true;
+  }
+
+  set setFullViewState(bool on) => state = on;
+}

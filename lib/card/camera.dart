@@ -9,6 +9,7 @@ import 'package:taroting/Interpretation/interpretation_controller.dart';
 import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
+import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/spread/spread_controller.dart';
 
@@ -41,7 +42,8 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                 return loaded
                     ? Image.file(File(xFileState.path))
                     : Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
+                        padding: const EdgeInsets.only(
+                            left: 20.0, top: 40, right: 20),
                         child: Stack(
                           alignment: Alignment.bottomCenter,
                           children: [
@@ -64,44 +66,40 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            Column(
-                              children: [
-                                InkWell(
-                                  onTap: () => onTakePicture(),
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 20.0),
-                                    child: CircleAvatar(
-                                        radius: 50.0,
-                                        backgroundColor: Colors.green,
-                                        child: Icon(Icons.camera_alt_outlined,
-                                            color: Colors.white)),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: InkWell(
-                                    onTap: () {
-                                      SpreadController().setCurrentType =
-                                          SpreadController()
-                                              .currentSpread
-                                              .prevType;
-                                      ref
-                                          .read(watchOpenCamera.notifier)
-                                          .setCameraState = false;
-                                    },
-                                    child: const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 0),
-                                      child: CircleAvatar(
-                                          radius: 30.0,
-                                          backgroundColor: Colors.white,
-                                          child: Icon(Icons.close,
-                                              color: Colors.black)),
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                width: GlobalParametersTar().screenSize.width -
+                                    100,
+                                child: Stack(
+                                  children: [
+                                    ClickWithSpin(
+                                      onClicked: onTakePicture,
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                            ),
+                            Positioned(
+                              left: 0,
+                              bottom: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  SpreadController().setCurrentType =
+                                      SpreadController().currentSpread.prevType;
+                                  ref
+                                      .read(watchOpenCamera.notifier)
+                                      .setCameraState = false;
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 0),
+                                  child: CircleAvatar(
+                                      radius: 30.0,
+                                      backgroundColor: Colors.white,
+                                      child: Icon(Icons.close,
+                                          color: Colors.black)),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -152,30 +150,11 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
             if (card != null) {
               SpreadController().updateSpread(card);
               await SpreadController().loadCard(
-                card: card,
+                card: card, ref: ref
               );
 
               ref.read(watchOpenCamera.notifier).setCameraState = false;
-              ref.read(watchCard.notifier).cardLoaded =
-                  TCardController().currentCard;
-              if (TCardController().currentCard != null) {
-                String ans;
-                // try {
-                //   await InterpretationController().getAnswer(
-                //       TCardController().currentCard!,
-                //       SpreadController().currentSpread.currentType!);
-                //   CardInterpretation? answer = InterpretationController()
-                //       .getInterpretationFromCard(TCardController().currentCard!,
-                //           SpreadController().currentSpread.currentType!);
-                //   ans = answer != null
-                //       ? answer.interpretation
-                //       : "Problem getting the interpretation";
-                //   ref.read(watchAnswer.notifier).state = ans;
-                // } catch (e) {
-                //   ans = "Problem getting the interpretation";
-                //   ref.read(watchAnswer.notifier).state = ans;
-                // }
-              }
+            
             }
           } catch (e) {
             // ignore: use_build_context_synchronously
@@ -191,6 +170,9 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                         OutlinedButton(
                             key: const Key("alertOKBtn"),
                             onPressed: () {
+                              ref
+                                  .read(watchOpenCamera.notifier)
+                                  .setCameraState = true;
                               Navigator.of(context).pop();
                             },
                             child: const Text("OK"))
@@ -232,4 +214,40 @@ Future<File?> cropImage(
     // return croppedFile.writeAsBytes(img.encodeJpg(croppedImage));
   }
   return null;
+}
+
+class ClickWithSpin extends StatefulWidget {
+  ClickWithSpin({required this.onClicked, super.key});
+  bool showSpin = false;
+  Function() onClicked;
+  @override
+  State<ClickWithSpin> createState() => _ClickWithSpinState();
+}
+
+class _ClickWithSpinState extends State<ClickWithSpin> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.showSpin == true
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Center(
+            child: InkWell(
+              onTap: () {
+                widget.onClicked();
+                setState(() {
+                  widget.showSpin = true;
+                });
+              },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20.0),
+                child: CircleAvatar(
+                    radius: 50.0,
+                    backgroundColor: Colors.green,
+                    child:
+                        Icon(Icons.camera_alt_outlined, color: Colors.white)),
+              ),
+            ),
+          );
+  }
 }

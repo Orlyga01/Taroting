@@ -24,76 +24,92 @@ class SpreadScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(builder: (consumercontext, WidgetRef ref, child) {
       showCamera = ref.watch(watchOpenCamera);
-
-      List<Widget> children = getListWidgets(context);
+      showSpreadFull = ref.watch(watchSpreadFullView);
+      List<Widget> children = getListWidgets(context, ref);
       return Scaffold(
           body: Padding(
-              padding: EdgeInsets.all(showSpreadFull ? 0 : 20.0),
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: children.length,
-                  itemBuilder: (context, index) {
-                    return children[index];
-                  })));
+        padding: EdgeInsets.symmetric(horizontal: showSpreadFull ? 0 : 20.0),
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: children.length,
+            itemBuilder: (context, index) {
+              return children[index];
+            }),
+      ));
     });
   }
 
-  List<Widget> getListWidgets(context) {
-    List<Widget> list;
-    list = [
-      CaptureCameraWidget(),
-      showSpreadFull ? SpreadNavigationFull() : SpreadNavigation()
-    ];
-    // if (showCamera == false) {
-    //   if (SpreadController().isRandom != true &&
-    //       TCardController().currentCard != null) {
-    //   list = list +
-    //       [
-    //         Container(
-    //           color: Colors.grey.shade200,
-    //           padding: EdgeInsets.all(8),
-    //           child: Wrap(
-    //             children: [
-    //               Text("This is not the correct card?"),
-    //               SizedBox(
-    //                 width: 20,
-    //               ),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //                   showDialog(
-    //                       context: context,
-    //                       builder: (_) {
-    //                         // return object of type Dialog
-
-    //                         return AlertDialog(
-    //                           title: SelectCardWidget(),
-    //                         );
-    //                       });
-    //                 },
-    //                 child: Text("Get the card",
-    //                     style: const TextStyle(color: Colors.black)),
-    //                 style: ElevatedButton.styleFrom(
-    //                   backgroundColor: Colors.white,
-    //                   elevation: 4.0,
-    //                 ),
-    //               )
-    //             ],
-    //           ),
-    //         )
-    //       ];
-    // }
+  List<Widget> getListWidgets(context, ref) {
+    List<Widget> list = [];
+    if (showSpreadFull != true && showCamera == false) {
+      list = [
+        Align(
+          alignment: Alignment.topLeft,
+          child: IconButton(
+              onPressed: () {
+                ref.read(watchSpreadFullView.notifier).setFullViewState = true;
+              },
+              icon: const Icon(Icons.arrow_back)),
+        )
+      ];
+    }
     list = list +
         [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Container(
-                width: double.infinity,
-                height: 160, // Adjust the height according to your image size
-                child: CardWidget(card: spread.results![iType])),
-          ),
-          InterpretationWidget()
+          CaptureCameraWidget(),
+          showSpreadFull ? SpreadNavigationFull() : SpreadNavigation()
         ];
+    if (showCamera == false && showSpreadFull == false) {
+      // if (SpreadController().isRandom != true &&
+      //     TCardController().currentCard != null) {
+      //   list = list +
+      //       [
+      //         Container(
+      //           color: Colors.grey.shade200,
+      //           padding: EdgeInsets.all(8),
+      //           child: Wrap(
+      //             children: [
+      //               Text("This is not the correct card?"),
+      //               SizedBox(
+      //                 width: 20,
+      //               ),
+      //               ElevatedButton(
+      //                 onPressed: () {
+      //                   showDialog(
+      //                       context: context,
+      //                       builder: (_) {
+      //                         // return object of type Dialog
 
+      //                         return AlertDialog(
+      //                           title: SelectCardWidget(
+      //                             chooseCard: true,
+      //                           ),
+      //                         );
+      //                       });
+      //                 },
+      //                 child: Text("Get the card",
+      //                     style: const TextStyle(color: Colors.black)),
+      //                 style: ElevatedButton.styleFrom(
+      //                   backgroundColor: Colors.white,
+      //                   elevation: 4.0,
+      //                 ),
+      //               )
+      //             ],
+      //           ),
+      //         )
+      //       ];
+      // }
+      list = list +
+          [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Container(
+                  width: double.infinity,
+                  height: 160, // Adjust the height according to your image size
+                  child: CardWidget(card: spread.results![iType])),
+            ),
+            InterpretationWidget()
+          ];
+    }
     return list;
   }
 }
