@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 
 class CardWidget extends ConsumerWidget {
   TCard? card;
@@ -39,11 +40,11 @@ class CardWidget extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Center(
-                              child: Text(card!.name,
+                              child: Text(card.name.TR,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                             ),
-                            Text(card!.arcana),
+                            Text(card.arcana.TR),
                             // Text(
                             //   "ABCDEFGHIJKLMNOP",
                             //   style: TextStyle(

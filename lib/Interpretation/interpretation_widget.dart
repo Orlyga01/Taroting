@@ -6,6 +6,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/spread_controller.dart';
 
 class InterpretationWidget extends ConsumerStatefulWidget {
@@ -49,7 +50,7 @@ class _InterpretationWidgetState extends ConsumerState<InterpretationWidget> {
                   ),
                   widget.ans != ""
                       ? Text(widget.ans!)
-                      : const Text("waiting...")
+                      :  Text("${"Waiting".TR}...")
                 ]);
               } else {
                 return const Center(

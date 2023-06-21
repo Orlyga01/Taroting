@@ -6,6 +6,7 @@ import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/spread_controller.dart';
 
 class SelectCardWidget extends StatefulWidget {
@@ -95,7 +96,7 @@ class _SelectCardWidgetState extends State<SelectCardWidget> {
                         children: [
                           Center(
                               child: Text(
-                                  enumToString(Suit.values[index].toString()),
+                                  enumToString(Suit.values[index].toString().TR),
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.black))),
                           Center(

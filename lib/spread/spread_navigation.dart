@@ -5,6 +5,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:taroting/spread/spread_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,8 +50,8 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                             !spread.isIninitState;
                         if (isinnerCurrent) return;
 
-                        TCard? cr = await SpreadController()
-                            .loadCard( iType: newType);
+                        TCard? cr =
+                            await SpreadController().loadCard(iType: newType);
                         if (spread.isRandom != true && cr == null) {
                           //if there is no card yet and its not random then we need to show the camera
                           ref.read(watchOpenCamera.notifier).setCameraState =
@@ -81,7 +82,8 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                           Text(
                             enumToString(spread.results!.keys
                                 .elementAt(index)
-                                .toString()),
+                                .toString()
+                                .TR),
                             // .capitalize(),
                             style: const TextStyle(color: Colors.black),
                           ),

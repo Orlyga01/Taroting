@@ -44,56 +44,56 @@ class SpreadScreen extends StatelessWidget {
       CaptureCameraWidget(),
       showSpreadFull ? SpreadNavigationFull() : SpreadNavigation()
     ];
-    if (showCamera == false) {
-      if (SpreadController().isRandom != true &&
-          TCardController().currentCard != null) {
-        list = list +
-            [
-              Container(
-                color: Colors.grey.shade200,
-                padding: EdgeInsets.all(8),
-                child: Wrap(
-                  children: [
-                    Text("This is not the correct card?"),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              // return object of type Dialog
+    // if (showCamera == false) {
+    //   if (SpreadController().isRandom != true &&
+    //       TCardController().currentCard != null) {
+    //   list = list +
+    //       [
+    //         Container(
+    //           color: Colors.grey.shade200,
+    //           padding: EdgeInsets.all(8),
+    //           child: Wrap(
+    //             children: [
+    //               Text("This is not the correct card?"),
+    //               SizedBox(
+    //                 width: 20,
+    //               ),
+    //               ElevatedButton(
+    //                 onPressed: () {
+    //                   showDialog(
+    //                       context: context,
+    //                       builder: (_) {
+    //                         // return object of type Dialog
 
-                              return AlertDialog(
-                                title: SelectCardWidget(),
-                              );
-                            });
-                      },
-                      child: Text("Get the card",
-                          style: const TextStyle(color: Colors.black)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        elevation: 4.0,
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ];
-      }
-      list = list +
-          [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Container(
-                  width: double.infinity,
-                  height: 160, // Adjust the height according to your image size
-                  child: CardWidget(card: spread.results![iType])),
-            ),
-            InterpretationWidget()
-          ];
-    }
+    //                         return AlertDialog(
+    //                           title: SelectCardWidget(),
+    //                         );
+    //                       });
+    //                 },
+    //                 child: Text("Get the card",
+    //                     style: const TextStyle(color: Colors.black)),
+    //                 style: ElevatedButton.styleFrom(
+    //                   backgroundColor: Colors.white,
+    //                   elevation: 4.0,
+    //                 ),
+    //               )
+    //             ],
+    //           ),
+    //         )
+    //       ];
+    // }
+    list = list +
+        [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Container(
+                width: double.infinity,
+                height: 160, // Adjust the height according to your image size
+                child: CardWidget(card: spread.results![iType])),
+          ),
+          InterpretationWidget()
+        ];
+
     return list;
   }
 }
