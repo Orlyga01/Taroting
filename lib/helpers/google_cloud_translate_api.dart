@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:taroting/keys.dart';
 import 'package:html_unescape/html_unescape.dart';
+
+import '../keys.dart';
 
 class TranslationApi {
   static Future<String> translate(String message, String toLanguageCode) async {

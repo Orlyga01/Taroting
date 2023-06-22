@@ -27,6 +27,7 @@ class CaptureCameraWidget extends ConsumerStatefulWidget {
 
 class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   late CameraController controller;
+  late Image imgController;
   bool loaded = false;
 
   @override
@@ -41,29 +42,43 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return loaded
                     ? Image.file(File(xFileState.path))
-                    : Padding(
+                    : Container(
+                        height: GlobalParametersTar().screenSize.height * 0.9,
                         padding: const EdgeInsets.only(
-                            left: 20.0, top: 40, right: 20),
+                          top: 5,
+                        ),
                         child: Stack(
-                          alignment: Alignment.bottomCenter,
+                          alignment: Alignment.topCenter,
                           children: [
-                            Transform.scale(
-                                alignment: Alignment.bottomCenter,
-                                scale: 1 /
-                                    (controller.value.aspectRatio *
-                                        MediaQuery.of(context)
-                                            .size
-                                            .aspectRatio),
+                            Container(
+                                height:
+                                    GlobalParametersTar().screenSize.height *
+                                            0.9 -
+                                        100,
                                 child: CameraPreview(controller)),
-                            Transform.scale(
-                              alignment: Alignment.bottomCenter,
-                              scale: 1 /
-                                  (controller.value.aspectRatio *
-                                      MediaQuery.of(context).size.aspectRatio) *
-                                  0.75,
-                              child: Image.asset(
-                                'assets/camera-overlay-conceptcoder.png',
-                                fit: BoxFit.cover,
+                            Container(
+                              height: GlobalParametersTar().screenSize.height *
+                                      0.9 -
+                                  100,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(color: Colors.black)),
+                                  Container(
+
+                                    height: GlobalParametersTar()
+                                                .screenSize
+                                                .height *
+                                            0.9 -
+                                        100,
+                                    child: Image.asset(
+                                      'assets/camera-overlay-conceptcoder.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Container(color: Colors.black)),
+                                ],
                               ),
                             ),
                             Positioned(
@@ -149,12 +164,9 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
             SpreadController().saveCroppedImg = cr.path;
             if (card != null) {
               SpreadController().updateSpread(card);
-              await SpreadController().loadCard(
-                card: card, ref: ref
-              );
+              await SpreadController().loadCard(card: card, ref: ref);
 
               ref.read(watchOpenCamera.notifier).setCameraState = false;
-            
             }
           } catch (e) {
             // ignore: use_build_context_synchronously

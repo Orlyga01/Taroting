@@ -28,7 +28,8 @@ class SpreadScreen extends StatelessWidget {
       List<Widget> children = getListWidgets(context, ref);
       return Scaffold(
           body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: showSpreadFull ? 0 : 20.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: showSpreadFull || showCamera ? 0 : 20.0),
         child: ListView.builder(
             shrinkWrap: true,
             itemCount: children.length,
@@ -56,7 +57,11 @@ class SpreadScreen extends StatelessWidget {
     list = list +
         [
           CaptureCameraWidget(),
-          showSpreadFull ? SpreadNavigationFull() : SpreadNavigation()
+          !showCamera
+              ? showSpreadFull
+                  ? SpreadNavigationFull()
+                  : SpreadNavigation()
+              : const SizedBox.shrink()
         ];
     if (showCamera == false && showSpreadFull == false) {
       // if (SpreadController().isRandom != true &&

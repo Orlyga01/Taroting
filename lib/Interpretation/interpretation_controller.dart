@@ -7,7 +7,7 @@ import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/google_cloud_translate_api.dart';
-import 'package:taroting/keys.dart';
+import '/keys.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:google_translator/google_translator.dart';
 

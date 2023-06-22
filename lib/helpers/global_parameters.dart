@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sharedor/helpers/export_helpers.dart';
 
 class GlobalParametersTar extends GlobalParameters {
@@ -16,10 +20,20 @@ class GlobalParametersTar extends GlobalParameters {
   setGlobalParameters(Map<String, dynamic>? params) async {
     try {
       _cameras = await availableCameras();
+      loadTEnsofFlowFile();
       super.setGlobalParameters(params);
     } on CameraException catch (e) {
       rethrow;
     }
+  }
+
+  loadTEnsofFlowFile() async {
+    final storageRef = FirebaseStorage.instance.ref();
+    final pathReference = storageRef.child("misc/model_unquant.tflite");
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final filePath = "${appDocDir.absolute}/assets/model_unquant.tflite";
+    final file = File(filePath);
+    final downloadTask = pathReference.writeToFile(file);
   }
 
   List<CameraDescription> get cameras => _cameras;
