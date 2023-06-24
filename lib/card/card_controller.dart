@@ -12,6 +12,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/card_repository.dart';
 import 'package:path/path.dart' as Path;
+import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -27,39 +28,47 @@ class TCardController {
   }
 
   Future<TCard?> identifyTCard(String imagePath) async {
-    String? res = await Tflite.loadModel(
-        model: "assets/model_unquant.tflite",
-        labels: "assets/labels.txt",
-        numThreads: 1, // defaults to 1
-        isAsset:
-            true, // defaults to true, set to false to load resources outside assets
-        useGpuDelegate:
-            false // defaults to false, set to true to use GPU delegate
-        );
-    List<dynamic>? output = await Tflite.runModelOnImage(
-      path: imagePath,
-      numResults: 2,
-      threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    if (kDebugMode && !Platform.isIOS) {
-      output = [
-        {"label": "1 Cups1", "confidence": 0.9}
-      ];
-    }
-    if (output != null && (output.isEmpty || output[0]["confidence"] < 0.6)) {
-      String cardfound =
-          output.length > 0 ? output[0]["label"].split(" ")[1] : "";
-      String? imgPath = SpreadController().savedCroppedImg;
-      if (imgPath != null) {
-        uploadFile(imgPath, cardfound);
+    final filePath = GlobalParametersTar().tensofFlowFile.path;
+    final appDocDir = await getApplicationDocumentsDirectory();
+
+    try {
+      String? res = await Tflite.loadModel(
+          model: filePath,
+          labels: GlobalParametersTar().tensofFlowLabel.path,
+          numThreads: 1, // defaults to 1
+          isAsset:
+              false, // defaults to true, set to false to load resources outside assets
+          useGpuDelegate:
+              false // defaults to false, set to true to use GPU delegate
+          );
+      List<dynamic>? output = await Tflite.runModelOnImage(
+        path: imagePath,
+        numResults: 2,
+        threshold: 0.5,
+        imageMean: 127.5,
+        imageStd: 127.5,
+      );
+      if (kDebugMode && !Platform.isIOS) {
+        output = [
+          {"label": "1 Cups1", "confidence": 0.9}
+        ];
       }
-    }
-    if (output != null && output.isNotEmpty) {
-      return getCard(output[0]["label"].split(" ")[1], SpreadController().iType!);
-    } else {
-      throw ("not found");
+      if (output != null && (output.isEmpty || output[0]["confidence"] < 0.6)) {
+        String cardfound =
+            output.length > 0 ? output[0]["label"].split(" ")[1] : "";
+        String? imgPath = SpreadController().savedCroppedImg;
+        if (imgPath != null) {
+          uploadFile(imgPath, cardfound);
+        }
+      }
+      if (output != null && output.isNotEmpty) {
+        return getCard(
+            output[0]["label"].split(" ")[1], SpreadController().iType!);
+      } else {
+        throw ("not found");
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -99,10 +108,9 @@ class TCardController {
     currentCard!.interpretations?[iType]!.interpretation = answer;
   }
 
-
-
   TCard? get card => currentCard;
-  Future<TCard?> getRandomCard(List<String>? exists, InterpretationType iType) async {
+  Future<TCard?> getRandomCard(
+      List<String>? exists, InterpretationType iType) async {
     String? cardid;
     while (cardid == null) {
       cardid = randomCard();
@@ -141,7 +149,7 @@ class TCardController {
   Future<String> uploadFile(String cardfound, [String? imagepath]) async {
     FirebaseStorage storage = FirebaseStorage.instance;
 
-    String finalUrl = cardfound + DateTime.now().toString();
+    String finalUrl = cardfound + "/" + DateTime.now().toString();
     imagepath ??= SpreadController().savedCroppedImg;
     if (imagepath == null) return "";
     //if person is deleted - need to clear this image - or when image changes - we need to remove this image

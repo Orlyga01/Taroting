@@ -20,8 +20,6 @@ dependencies:
   google_translator: ^1.0.0
   html_unescape: ^2.0.0
   image: ^3.3.0
-  image_cropper: ^4.0.1
-  image_picker: ^0.8.7+4
   meta: ^1.8.0
   path_provider: ^2.0.15
   sharedor: 
@@ -49,7 +47,6 @@ flutter:
     #   fonts: 
     #   - asset: assets/fonts/ZodiacSigns.ttf  
   assets:
-    - assets/labels.txt
     - assets/cards/
     - assets/camera-overlay-conceptcoder.png
     - assets/images/

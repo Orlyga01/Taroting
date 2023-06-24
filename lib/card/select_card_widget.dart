@@ -39,7 +39,7 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                   onPressed: () {
                     ref.read(watchOpenCamera.notifier).setCameraState = true;
                   },
-                  child: Text("Take a new photo", textAlign: TextAlign.center)),
+                  child: Text("Take a new photo".TR, textAlign: TextAlign.center)),
             ),
             SizedBox(width: 20),
             SizedBox(
@@ -52,7 +52,7 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                   },
                   child: Align(
                       alignment: Alignment.center,
-                      child: Text("Card is not the same as my photo",
+                      child: Text("Card is not the same as my photo".TR,
                           textAlign: TextAlign.center))),
             )
           ])
@@ -81,7 +81,7 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                           SizedBox(width: 25),
                           Expanded(
                               child: Text(
-                            "Please select your card:",
+                            "Please select your card:".TR,
                             style: TextStyle(fontSize: 16),
                           )),
                         ],
@@ -132,7 +132,7 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text("Please select your card:"),
+                      child: Text("Please select your card:".TR),
                     ),
                     Expanded(
                       child: GridView.builder(

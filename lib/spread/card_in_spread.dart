@@ -5,6 +5,7 @@ import 'package:taroting/card/card_model.dart';
 import 'package:taroting/card/select_card_widget.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/spread_controller.dart';
 import 'package:sharedor/common_functions.dart';
 
@@ -131,7 +132,7 @@ if (doRefresh == true) {
                   Expanded(
                     child: Center(
                       child: Text(
-                        title!,
+                        title!.TR,
                         style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,

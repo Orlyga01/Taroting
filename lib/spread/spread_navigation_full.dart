@@ -97,8 +97,8 @@ class _SpreadNavigationFullState extends ConsumerState<SpreadNavigationFull> {
 
                 ref.read(watchRefresh.notifier).doRefresh = false;
               },
-              label: const Text(
-                "Reset",
+              label:  Text(
+                "Reset".TR,
                 style: TextStyle(color: Color.fromARGB(255, 236, 227, 142)),
               )),
           const Expanded(child: SizedBox()),
@@ -107,35 +107,35 @@ class _SpreadNavigationFullState extends ConsumerState<SpreadNavigationFull> {
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text("${'Instrcutions'.TR}:"),
+        child: Text("${'Instructions'.TR}:"),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: RichText(
-            text: const TextSpan(
+            text: TextSpan(
                 style: TextStyle(fontSize: 12, color: Colors.black),
                 children: [
               TextSpan(
                   text:
-                      "1. Think about a subject you would like to have some guidance for.\n\n"),
+                      "1. ${'Think about a subject you would like to have some guidance for'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "2. Have a a Rider Tarot deck, or Alternatively choose the Random selection.\n\n"),
+                      "2. ${'Have a a Rider Tarot deck, or Alternatively choose the Random selection'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "3. Shuffle the deck of cards while thinking and consentrating about the subject.\n\n"),
+                      "3. ${'Shuffle the deck of cards while thinking and consentrating about the subject'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "4. Select four cards, the first would represent the subject, and the rest represents the past, present and future that are related to the subject.\n\n"),
+                      "4. ${'Select four cards, the first would represent the subject, and the rest represents the past, present and future that are related to the subject'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "5. Click each position, of subject, past, present and future, and take a photo of the card you've selected.\n\n"),
+                      "5. ${'Click each position, of subject, past, present and future, and take a photo of the card you have selected'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "5.1. If the card that is shown is not the card in the photo, please select it by hand by clicking the 3 dots.\n\n"),
+                      "5.1. ${'If the card that is shown is not the card in the photo, please select it by hand by clicking the 3 dots'.TR}.\n\n"),
               TextSpan(
                   text:
-                      "6. After there's a card in each position, click the card to get the interpretation of the card in its selected position.\n\n")
+                      "6. ${'After there is a card in each position, click the card to get the interpretation of the card in its selected position'.TR}.\n\n")
             ])),
       )
     ];

@@ -11,6 +11,7 @@ import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
 import 'package:taroting/helpers/providers.dart';
+import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/spread_controller.dart';
 
 final xFileProvider = StateProvider((ref) => File(''));
@@ -29,6 +30,7 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   late CameraController controller;
   late Image imgController;
   bool loaded = false;
+  GlobalKey _keyWidth = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +65,11 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                               child: Row(
                                 children: [
                                   Expanded(
-                                      child: Container(color: Colors.black)),
+                                      key: _keyWidth,
+                                      child: Container(
+                                          color:
+                                              Colors.white.withOpacity(0.6))),
                                   Container(
-
                                     height: GlobalParametersTar()
                                                 .screenSize
                                                 .height *
@@ -77,7 +81,9 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                                     ),
                                   ),
                                   Expanded(
-                                      child: Container(color: Colors.black)),
+                                      child: Container(
+                                          color:
+                                              Colors.white.withOpacity(0.6))),
                                 ],
                               ),
                             ),
@@ -147,17 +153,20 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
         if (xfile != null) {
           final bytes = await xfile.readAsBytes();
           //   final image = img.decodeImage(bytes);
-          File? cr = await cropImage(
-              xfile.path, 20, 60, size.width - 40, (size.width - 40) * 1.5);
-          // showDialog(
-          //     context: context,
-          //     builder: (_) {
-          //       // return object of type Dialog
+          final RenderBox renderBox =
+              _keyWidth.currentContext?.findRenderObject() as RenderBox;
+          double widthh = size.width - 2 * (renderBox.size.width + 10);
+          File? cr = await cropImage(xfile.path,
+              1.5 * (renderBox.size.width + 10), 20, widthh, widthh * 1.6);
+          showDialog(
+              context: context,
+              builder: (_) {
+                // return object of type Dialog
 
-          //       return AlertDialog(
-          //         title: Image.file(File(cr!.path)),
-          //       );
-          //     });
+                return AlertDialog(
+                  title: Image.file(File(cr!.path)),
+                );
+              });
           try {
             TCard? card = await TCardController().identifyTCard(cr!.path);
             card = TCardController().currentCard;
@@ -176,8 +185,9 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                   // return object of type Dialog
 
                   return AlertDialog(
-                      title: const Text(
-                          " Sorry - the card was not found. Please take a picture again."),
+                      title: Text(
+                          " Sorry - the card was not found. Please take a picture again."
+                              .TR),
                       actions: [
                         OutlinedButton(
                             key: const Key("alertOKBtn"),

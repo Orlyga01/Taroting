@@ -42,7 +42,7 @@ class _InterpretationWidgetState extends ConsumerState<InterpretationWidget> {
                       //     },
                       //     icon: Icon(Icons.language)),
                       Text(
-                        "${card.name} as the ${enumToString(iType.toString())}",
+                        "${card.name.TR} ${'as the'.TR} ${enumToString(iType.toString()).TR}",
                         style: const TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),
