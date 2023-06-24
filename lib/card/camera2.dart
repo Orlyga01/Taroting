@@ -327,3 +327,8 @@ class _ClickWithSpinState extends State<ClickWithSpin> {
           );
   }
 }
+// storePassword=Blabla@@01
+// keyPassword=Blabla@@01
+// keyAlias=upload
+// storeFile=C:\\Flutter\\keys\\keystore.jks
+//C:\Flutter\Taroting\android\key.properties
