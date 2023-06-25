@@ -56,12 +56,11 @@ class SpreadScreen extends StatelessWidget {
     }
     list = list +
         [
-          CaptureCameraWidget(),
           !showCamera
               ? showSpreadFull
                   ? SpreadNavigationFull()
                   : SpreadNavigation()
-              : const SizedBox.shrink()
+              : CaptureCameraWidget(),
         ];
     if (showCamera == false && showSpreadFull == false) {
       // if (SpreadController().isRandom != true &&

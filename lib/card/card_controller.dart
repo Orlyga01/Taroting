@@ -29,12 +29,15 @@ class TCardController {
 
   Future<TCard?> identifyTCard(String imagePath) async {
     final filePath = GlobalParametersTar().tensofFlowFile.path;
-    final appDocDir = await getApplicationDocumentsDirectory();
+   
+    final labelPath = GlobalParametersTar().tensofFlowLabel.path;
+    // final labelPath = "assets/misc/labels.txt";
+    //  final filePath = "assets/misc/model_unquant.tflite";
 
     try {
       String? res = await Tflite.loadModel(
           model: filePath,
-          labels: GlobalParametersTar().tensofFlowLabel.path,
+          labels: labelPath,
           numThreads: 1, // defaults to 1
           isAsset:
               false, // defaults to true, set to false to load resources outside assets
@@ -43,22 +46,25 @@ class TCardController {
           );
       List<dynamic>? output = await Tflite.runModelOnImage(
         path: imagePath,
-        numResults: 2,
-        threshold: 0.5,
-        imageMean: 127.5,
-        imageStd: 127.5,
+        numResults: 78,
+        threshold: 0.1,
+        imageMean: 0.0,
+        imageStd: 255.0,
       );
-      if (kDebugMode && !Platform.isIOS) {
-        output = [
-          {"label": "1 Cups1", "confidence": 0.9}
-        ];
-      }
+      // if (kDebugMode && !Platform.isIOS) {
+      //   output = [
+      //     {"label": "1 Cups1", "confidence": 0.9}
+      //   ];
+      // }
       if (output != null && (output.isEmpty || output[0]["confidence"] < 0.6)) {
         String cardfound =
-            output.length > 0 ? output[0]["label"].split(" ")[1] : "";
+            output.length > 0 ? output[0]["label"].split(" ")[1] : "misc";
         String? imgPath = SpreadController().savedCroppedImg;
         if (imgPath != null) {
-          uploadFile(imgPath, cardfound);
+          uploadFile(
+            cardfound,
+            imgPath,
+          );
         }
       }
       if (output != null && output.isNotEmpty) {
