@@ -29,21 +29,31 @@ class TCardController {
 
   Future<TCard?> identifyTCard(String imagePath) async {
     final filePath = GlobalParametersTar().tensofFlowFile.path;
-   
+
     final labelPath = GlobalParametersTar().tensofFlowLabel.path;
     // final labelPath = "assets/misc/labels.txt";
     //  final filePath = "assets/misc/model_unquant.tflite";
 
     try {
-      String? res = await Tflite.loadModel(
-          model: filePath,
-          labels: labelPath,
-          numThreads: 1, // defaults to 1
-          isAsset:
-              false, // defaults to true, set to false to load resources outside assets
-          useGpuDelegate:
-              false // defaults to false, set to true to use GPU delegate
-          );
+      String? res = kDebugMode
+          ? await Tflite.loadModel(
+              model: "assets/misc/model_unquant.tflite",
+              labels: "assets/misc/labels.txt",
+              numThreads: 1, // defaults to 1
+              isAsset:
+                  true, // defaults to true, set to false to load resources outside assets
+              useGpuDelegate:
+                  false // defaults to false, set to true to use GPU delegate
+              )
+          : await Tflite.loadModel(
+              model: filePath,
+              labels: labelPath,
+              numThreads: 1, // defaults to 1
+              isAsset:
+                  false, // defaults to true, set to false to load resources outside assets
+              useGpuDelegate:
+                  false // defaults to false, set to true to use GPU delegate
+              );
       List<dynamic>? output = await Tflite.runModelOnImage(
         path: imagePath,
         numResults: 78,
@@ -74,7 +84,7 @@ class TCardController {
         throw ("not found");
       }
     } catch (e) {
-      print(e);
+      print("!!!!!! can't load tensorflow file " + e.toString());
     }
   }
 

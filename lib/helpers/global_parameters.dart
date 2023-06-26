@@ -34,7 +34,7 @@ class GlobalParametersTar extends GlobalParameters {
     final appDocDir = await getApplicationDocumentsDirectory();
 
     if (kDebugMode) {
-      _tensorFlowLabel =
+      _tensofFlowFile =
           File("${appDocDir.path}/assets/misc/model_unquant.tflite");
       _tensorFlowLabel = File("${appDocDir.path}/assets/misc/labels.txt");
     } else {

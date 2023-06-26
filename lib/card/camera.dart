@@ -49,13 +49,18 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
   // }
   @override
   void dispose() {
+    PaintingBinding.instance.imageCache.clear();
+    controller.dispose();
+
     // TODO: implement dispose
     super.dispose();
-    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.cameraImage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getCropImage());
+    }
     final xFileState = ref.watch(xFileProvider);
     widget.showCamera = ref.watch(watchOpenCamera);
     return widget.showCamera == false
@@ -74,41 +79,6 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                         child: Stack(
                           alignment: Alignment.topCenter,
                           children: [
-                            Container(
-                                height:
-                                    GlobalParametersTar().screenSize.height *
-                                            0.9 -
-                                        100,
-                                child: CameraPreview(controller)),
-                            Container(
-                              height: GlobalParametersTar().screenSize.height *
-                                      0.9 -
-                                  100,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      key: _keyWidth,
-                                      child: Container(
-                                          color:
-                                              Colors.white.withOpacity(0.6))),
-                                  Container(
-                                    height: GlobalParametersTar()
-                                                .screenSize
-                                                .height *
-                                            0.9 -
-                                        100,
-                                    child: Image.asset(
-                                      'assets/camera-overlay-conceptcoder.png',
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Expanded(
-                                      child: Container(
-                                          color:
-                                              Colors.white.withOpacity(0.6))),
-                                ],
-                              ),
-                            ),
                             if (widget.cameraImage != null)
                               Positioned(
                                   child: Align(
@@ -147,6 +117,41 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                                                   ))))),
                                 ),
                               )),
+                            Container(
+                                height:
+                                    GlobalParametersTar().screenSize.height *
+                                            0.9 -
+                                        100,
+                                child: CameraPreview(controller)),
+                            Container(
+                              height: GlobalParametersTar().screenSize.height *
+                                      0.9 -
+                                  100,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      key: _keyWidth,
+                                      child: Container(
+                                          color:
+                                              Colors.white.withOpacity(0.6))),
+                                  Container(
+                                    height: GlobalParametersTar()
+                                                .screenSize
+                                                .height *
+                                            0.9 -
+                                        100,
+                                    child: Image.asset(
+                                      'assets/camera-overlay-conceptcoder.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Container(
+                                          color:
+                                              Colors.white.withOpacity(0.6))),
+                                ],
+                              ),
+                            ),
                             Positioned(
                               bottom: 0,
                               child: Container(
@@ -227,8 +232,6 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
               (renderBox.size.width + 10) / widget.scale, 25 / widget.scale);
 
           setState(() {});
-          await Future.delayed(
-              Duration(milliseconds: 1500), () => getCropImage());
         }
       }
     });
@@ -255,7 +258,8 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
             return AlertDialog(
                 title: Text(
                     " Sorry - the card was not found. Please take a picture again."
-                        .TR),
+                            .TR +
+                        e.toString()),
                 actions: [
                   OutlinedButton(
                       key: const Key("alertOKBtn"),
@@ -272,10 +276,17 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
 
   Future<File?> getCropImage() async {
     if (widget.inProcess) return null;
+    await Future.delayed(Duration.zero);
+    if (cropperKey.currentContext == null) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        widget.inProcess = false;
+        getCropImage();
+      });
+      return null;
+    }
     widget.inProcess = true;
 
-     Future.doWhile(() => cropperKey.currentContext == null);
-    await Future.delayed(Duration(milliseconds: 1000));
+    //  Future.doWhile(() => cropperKey.currentContext == null);
     final renderObject = cropperKey.currentContext!.findRenderObject();
     final boundary = renderObject as RenderRepaintBoundary;
     final image = await boundary.toImage();
@@ -285,60 +296,38 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
     );
 
     final pngBytes = byteData?.buffer.asUint8List();
+    print("-----pngBytes length" + pngBytes!.length.toString());
+
+    if (pngBytes.length < 20000) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        widget.inProcess = false;
+        getCropImage();
+      });
+      return null;
+    }
     final tempDir = await getApplicationDocumentsDirectory();
     File file = await File(
             '${tempDir.path}/${DateTime.now().microsecondsSinceEpoch.toString()}_cropped.png')
         .create();
-    file.writeAsBytesSync(pngBytes!);
+    file.writeAsBytesSync(pngBytes);
 
-    showDialog(
-        context: context,
-        builder: (_) {
-          // return object of type Dialog
+    // showDialog(
+    //     context: context,
+    //     builder: (_) {
+    //       // return object of type Dialog
 
-          return AlertDialog(
-            title: Column(
-              children: [
-                Container(color: Colors.yellow, child: Text("before")),
-                Image.file(file),
-              ],
-            ),
-          );
-        });
+    //       return AlertDialog(
+    //         title: Column(
+    //           children: [
+    //             Container(color: Colors.yellow, child: Text("before")),
+    //             Image.file(file),
+    //           ],
+    //         ),
+    //       );
+    //     });
     await findTheCard(file);
     widget.inProcess = false;
   }
-}
-
-Future<File?> cropImage(
-    String imagePath, double x, double y, double width, double height) async {
-  // Read the image file
-  final File imageFile = File(imagePath);
-  final List<int> imageBytes = await imageFile.readAsBytes();
-  final img.Image? image = img.decodeImage(imageBytes);
-  if (image != null) {
-    final int left = (x).round();
-    final int top = (y).round();
-    final int cropWidth = (width).round();
-    final int cropHeight = (height).round();
-    final img.Image croppedImage =
-        img.copyCrop(image, left, top, cropWidth, cropHeight);
-    final croppedFile = File('${imagePath}_croppe.png');
-
-    return croppedFile.writeAsBytes(img.encodePng(croppedImage));
-    // Crop the image
-
-    // Calculate the coordinates based on the provided dimensions
-
-    // Get the application documents directory
-    // final Directory appDir = await getApplicationDocumentsDirectory();
-    // final String appPath = appDir.path;
-
-    // Save the cropped image to a file
-    // final File croppedFile = File('$appPath/cropped_image.jpg');
-    // return croppedFile.writeAsBytes(img.encodeJpg(croppedImage));
-  }
-  return null;
 }
 
 class ClickWithSpin extends StatefulWidget {
