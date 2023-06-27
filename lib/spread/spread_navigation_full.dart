@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sharedor/common_functions.dart';
 import 'package:taroting/Interpretation/interpretation_controller.dart';
@@ -5,6 +6,7 @@ import 'package:taroting/Interpretation/interpretation_model.dart';
 import 'package:taroting/card/card_controller.dart';
 import 'package:taroting/card/card_model.dart';
 import 'package:taroting/helpers/global_parameters.dart';
+import 'package:taroting/helpers/menuAction.dart';
 import 'package:taroting/helpers/providers.dart';
 import 'package:taroting/helpers/translations.dart';
 import 'package:taroting/spread/card_in_spread.dart';
@@ -97,12 +99,13 @@ class _SpreadNavigationFullState extends ConsumerState<SpreadNavigationFull> {
 
                 ref.read(watchRefresh.notifier).doRefresh = false;
               },
-              label:  Text(
+              label: Text(
                 "Reset".TR,
                 style: TextStyle(color: Color.fromARGB(255, 236, 227, 142)),
               )),
           const Expanded(child: SizedBox()),
-          RandomIconButton()
+          RandomIconButton(),
+          kDebugMode ? ActionMenuButton() : SizedBox.shrink()
         ]),
       ),
       Padding(
@@ -165,8 +168,8 @@ class RandomIconButton extends ConsumerWidget {
           await SpreadController().setRandomSpread(ref);
           ref.read(watchRandom.notifier).processRandom = false;
         },
-        label: const Text(
-          "Random Card Selection",
+        label: Text(
+          "Random Card Selection".TR,
           style: TextStyle(color: Color.fromARGB(255, 236, 227, 142)),
         ));
   }

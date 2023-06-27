@@ -5,12 +5,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sharedor/helpers/export_helpers.dart';
+import 'package:taroting/helpers/translations.dart';
 
 class GlobalParametersTar extends GlobalParameters {
   Map<String, dynamic>? params;
   late List<CameraDescription> _cameras;
   late File _tensofFlowFile;
   late File _tensorFlowLabel;
+  late Map<String, String> _translations;
   static final GlobalParametersTar _gp = GlobalParametersTar._internal();
   GlobalParametersTar._internal() {
     // setGlobalParameters(params);
@@ -21,10 +23,10 @@ class GlobalParametersTar extends GlobalParameters {
   @override
   setGlobalParameters(Map<String, dynamic>? params) async {
     try {
-      _cameras = await availableCameras();
-
-      await loadTEnsofFlowFile();
       super.setGlobalParameters(params);
+      _cameras = await availableCameras();
+      _translations = await getTranslations();
+      await loadTEnsofFlowFile();
     } catch (e) {
       rethrow;
     }
@@ -54,6 +56,7 @@ class GlobalParametersTar extends GlobalParameters {
     }
   }
 
+  Map<String, String> get translations => _translations;
   File get tensofFlowFile => _tensofFlowFile;
   File get tensofFlowLabel => _tensorFlowLabel;
 

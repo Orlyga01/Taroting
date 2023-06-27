@@ -71,9 +71,9 @@ class _SpreadNavigationState extends ConsumerState<SpreadNavigation> {
                               : const SizedBox.shrink(),
                           Text(
                             enumToString(spread.results!.keys
-                                .elementAt(index)
-                                .toString()
-                                .TR),
+                                    .elementAt(index)
+                                    .toString())
+                                .TR,
                             // .capitalize(),
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 11),

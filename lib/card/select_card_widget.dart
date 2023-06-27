@@ -39,7 +39,8 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                   onPressed: () {
                     ref.read(watchOpenCamera.notifier).setCameraState = true;
                   },
-                  child: Text("Take a new photo".TR, textAlign: TextAlign.center)),
+                  child:
+                      Text("Take a new photo".TR, textAlign: TextAlign.center)),
             ),
             SizedBox(width: 20),
             SizedBox(
@@ -160,8 +161,9 @@ class _SelectCardWidgetState extends ConsumerState<SelectCardWidget> {
                                   children: [
                                     Center(
                                         child: Text(
-                                            enumToString(
-                                                Suit.values[index].toString().TR),
+                                            enumToString(Suit.values[index]
+                                                    .toString())
+                                                .TR,
                                             style: TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black))),
