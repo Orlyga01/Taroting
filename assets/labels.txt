@@ -75,3 +75,4 @@
 74 Wands12
 75 Wands13
 76 Wands14
+77 Cups14

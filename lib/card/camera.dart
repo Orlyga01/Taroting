@@ -86,35 +86,61 @@ class _CaptureCameraWidgetState extends ConsumerState<CaptureCameraWidget> {
                                 child: RepaintBoundary(
                                   key: cropperKey,
                                   child: Container(
-                                      width: widget.croppedSize.width /
-                                          widget.scale *
-                                          0.9,
-                                      height: widget.croppedSize.width /
-                                          widget.scale *
-                                          0.9 *
-                                          1.7,
-                                      // Define the height of the visible part
-                                      child: OverflowBox(
-                                          maxWidth: double.infinity,
-                                          maxHeight: double.infinity,
-                                          alignment: Alignment.center,
-                                          child: FittedBox(
-                                              fit: BoxFit.cover,
-                                              alignment: Alignment.center,
-                                              child: Container(
-                                                  width:
-                                                      widget.croppedSize.width /
-                                                          widget.scale *
-                                                          0.9,
-                                                  height: widget
-                                                          .croppedSize.width /
-                                                      widget.scale *
-                                                      0.9 *
-                                                      1.7, //ne the height of the vis
-                                                  child: Image.memory(
-                                                    widget.cameraImage!,
-                                                    fit: BoxFit.none,
-                                                  ))))),
+                                    height: widget.croppedSize.width /
+                                        widget.scale *
+                                        0.9 *
+                                        1.7,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          color: Colors.white,
+                                          width: widget.croppedSize.width /
+                                              widget.scale *
+                                              0.9 *
+                                              0.35,
+                                        ),
+                                        Container(
+                                            width: widget.croppedSize.width /
+                                                widget.scale *
+                                                0.9,
+                                            height: widget.croppedSize.width /
+                                                widget.scale *
+                                                0.9 *
+                                                1.7,
+                                            // Define the height of the visible part
+                                            child: OverflowBox(
+                                                maxWidth: double.infinity,
+                                                maxHeight: double.infinity,
+                                                alignment: Alignment.center,
+                                                child: FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    alignment: Alignment.center,
+                                                    child: Container(
+                                                        width: widget
+                                                                .croppedSize
+                                                                .width /
+                                                            widget.scale *
+                                                            0.9,
+                                                        height: widget
+                                                                .croppedSize
+                                                                .width /
+                                                            widget.scale *
+                                                            0.9 *
+                                                            1.7, //ne the height of the vis
+                                                        child: Image.memory(
+                                                          widget.cameraImage!,
+                                                          fit: BoxFit.none,
+                                                        ))))),
+                                        Container(
+                                          color: Colors.white,
+                                          width: widget.croppedSize.width /
+                                              widget.scale *
+                                              0.9 *
+                                              0.35,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               )),
                             Container(
