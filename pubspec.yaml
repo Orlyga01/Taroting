@@ -10,9 +10,7 @@ dependencies:
   animated_splash_screen: ^1.3.0
   camera: ^0.10.5+2
   chat_gpt_flutter: ^1.0.10
-  firebase_core: ^1.10.0
-  firebase_crashlytics: ^2.6.1
-  firebase_storage: ^10.3.11
+  firebase_core: ^2.2.0
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.3.6
@@ -24,6 +22,8 @@ dependencies:
   path_provider: ^2.0.15
   sharedor: 
     path: ../sharedor
+  taroting_pk:
+    path: ../taroting_pk
   # tflite: ^1.1.2
     
 dev_dependencies:
@@ -52,7 +52,7 @@ flutter:
     - assets/images/
     - assets/misc/
 dependency_overrides:
-    firebase_core_platform_interface: 4.5.1
+    # firebase_core_platform_interface: 4.5.1
 
 
  
