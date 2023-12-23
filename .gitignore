@@ -58,3 +58,4 @@ ios/Podfile.lock
 .gitignore
 lib/card/card_controller.dart
 pubspec.yaml
+ios/Runner.xcodeproj/project.pbxproj
