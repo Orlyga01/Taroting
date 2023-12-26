@@ -17,6 +17,7 @@ dependencies:
   flutter_tflite: ^1.0.1
   google_translator: ^1.0.0
   html_unescape: ^2.0.0
+  language_picker: ^0.4.3
   image: ^3.3.0
   meta: ^1.8.0
   path_provider: ^2.0.15
