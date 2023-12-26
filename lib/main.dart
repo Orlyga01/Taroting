@@ -24,9 +24,7 @@ void main() async {
   }
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  await GlobalParametersTar().setGlobalParameters({
-    "language": Platform.localeName,
-  });
+  await GlobalParametersTar().setGlobalParameters({});
   runApp(ProviderScope(child: const MainApp()));
 }
 
