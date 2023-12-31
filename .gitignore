@@ -59,3 +59,6 @@ ios/Podfile.lock
 lib/card/card_controller.dart
 pubspec.yaml
 ios/Runner.xcodeproj/project.pbxproj
+macos/Flutter/GeneratedPluginRegistrant.swift
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
