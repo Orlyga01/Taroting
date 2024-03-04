@@ -1,133 +1,182 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:taroting/card/card_controller.dart';
-// import 'package:taroting/card/card_model.dart';
+import 'dart:async';
+import 'dart:math';
 
-// class HomePage extends StatefulWidget {
-//   HomePage({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sharedor/export_common.dart';
+import 'package:taroting_pk/helpers/sparkle.dart';
 
-//   @override
-//   State<HomePage> createState() => _HomePageState();
-//   TCard? card;
-// }
+class Circle {
+  double size;
+  Color color;
+  Size position;
+  double opacity = 1;
+  Circle(this.size, this.color, this.position, this.opacity);
+  void set setOpacity(value) => opacity = value;
+}
 
-// class _HomePageState extends State<HomePage> {
-//   final ImagePicker _picker = ImagePicker();
+class SplashScreen extends ConsumerStatefulWidget {
+  SplashScreen({
+    Key? key,
+  }) : super(key: key);
+  List<Circle> circleList = [];
 
-//   @override
-//   bool _loading = false;
-//   List<dynamic>? _outputs;
-//   String? res;
-//   String? _gptText;
-//   classifyImage(image) async {
-//     setState(() {
-//       _loading = true;
-//     });
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
-//     if (image == null) return;
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  List<Widget> widList = [];
+  double opacityState = 0;
+  late Size screensize;
+  double get getOpacity => opacityState;
+  bool disposed = false;
+  @override
+  void initState() {
+    super.initState();
+    screensize = MediaQueryData.fromView(
+            WidgetsBinding.instance.platformDispatcher.views.single)
+        .size;
+    if (widList.length == 0) widList = createChildren();
+    int i = 1;
+    Timer.periodic(Duration(milliseconds: (400)), (timer) async {
+      if (mounted) {
+        print(i);
+        ref.read(opacityStateChanged).setOpacity(i);
+        if (i == widList.length - 1 || disposed == true) timer.cancel();
+        i++;
+      } else {
+        timer.cancel();
+      }
+    });
+  }
 
-//     try {
-//       widget.card = await TCardController().identifyTCard(image);
-//       setState(() {
-//         _loading = false;
-//       });
-//     } catch (e) {
-//       if (e == "not found") {}
-//     }
-//   }
+  @override
+  void dispose() {
+    disposed = true;
 
-//   Future<void> _optiondialogbox() {
-//     return showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             backgroundColor: Colors.purple,
-//             content: SingleChildScrollView(
-//               child: ListBody(
-//                 children: <Widget>[
-//                   GestureDetector(
-//                     child: Text(
-//                       "Take a Picture",
-//                       style: TextStyle(color: Colors.white, fontSize: 20.0),
-//                     ),
-//                     onTap: openCamera,
-//                   ),
-//                   Padding(padding: EdgeInsets.all(10.0)),
-//                   GestureDetector(
-//                     child: Text(
-//                       "Select image ",
-//                       style: TextStyle(color: Colors.white, fontSize: 20.0),
-//                     ),
-//                     onTap: openGallery,
-//                   )
-//                 ],
-//               ),
-//             ),
-//           );
-//         });
-//   }
+    super.dispose();
+  }
 
-//   Future openCamera() async {
-//     // var image = await _picker.pickImage(source: ImageSource.camera);
-//     TCard? card = await TCardController().getCard("Pentacles1", );
-//     Navigator.pushNamed(context, "interpretation", arguments: {"card": card});
-//     //classifyImage(image);
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.white,
+        child: Stack(fit: StackFit.expand, children: widList));
+    //child: Text("dfdfdfdfd"));
+  }
 
-//   //camera method
-//   Future openGallery() async {
-//     var piture = await _picker.pickImage(source: ImageSource.gallery);
+  List<Widget> createChildren() {
+    List<Widget> list = [];
 
-//     classifyImage(piture);
-//   }
+    for (var i = 0; i < 40; i++) {
+      Circle circle = getCircle();
+      widget.circleList.add(circle);
+      list.add(getElement(circle, i));
+    }
+    return list;
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
+  Widget getElement(Circle circle, int i) {
+    return Positioned(
+      top: circle.position.height,
+      left: circle.position.width,
+      child: Consumer(builder: (consumercontext, ref, child) {
+        double opacity = ref.watch(opacityStateChanged).getOpacity(i);
+        return Opacity(
+          opacity: opacity,
+          // child: LogoSpinner(height: circle.size, color: circle.color),
+          child: Sparkler(),
+        );
+      }),
+    );
+  }
 
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Image Classification'),
-//         backgroundColor: Colors.purple,
-//       ),
-//       body: _loading
-//           ? Container(
-//               alignment: Alignment.center,
-//               child: CircularProgressIndicator(),
-//             )
-//           : Container(
-//               width: MediaQuery.of(context).size.width,
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.center,
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   widget.card == null
-//                       ? Container()
-//                       : Image.asset("assets/${widget.card!.img}"),
-//                   Text(
-//                     _gptText ?? "",
-//                   ),
-//                   SizedBox(
-//                     height: 20,
-//                   ),
-//                   _outputs != null
-//                       ? Text(
-//                           '${_outputs![0]["label"]}',
-//                           style: TextStyle(
-//                             color: Colors.black,
-//                             fontSize: 20.0,
-//                             background: Paint()..color = Colors.white,
-//                           ),
-//                         )
-//                       : Container()
-//                 ],
-//               ),
-//             ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: _optiondialogbox,
-//         backgroundColor: Colors.purple,
-//         child: Icon(Icons.image),
-//       ),
-//     );
-//   }
-// }
+  double randomHight(int cirSize) {
+    return (20 + Random().nextInt(screensize.height.truncate() - 20 - cirSize))
+        .toDouble();
+  }
+
+  int randomCircleSize() {
+    return (4 + Random().nextInt(21)) * 10;
+  }
+
+  double randomWidth(int cirSize) {
+    return 20 +
+        Random().nextInt(screensize.width.truncate() - 20 - cirSize).toDouble();
+  }
+
+  Circle getCircle() {
+    List<Color> colors = [
+      BeStyle.main,
+      const Color.fromARGB(255, 175, 247, 94),
+      Color.fromARGB(255, 70, 122, 11),
+      Colors.lightGreen
+    ];
+    int cirSize = randomCircleSize();
+    Circle circle = Circle(cirSize.toDouble(), colors[Random().nextInt(4)],
+        Size(randomWidth(cirSize), randomHight(cirSize)), 0);
+    return circle;
+  }
+}
+
+final opacityStateChanged = ChangeNotifierProvider.autoDispose<OpacityState>(
+    (ref) => new OpacityState());
+
+class OpacityState extends ChangeNotifier {
+  List<double> opacityList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+  void setOpacity(i) {
+    opacityList[i] = 1;
+    notifyListeners();
+  }
+
+  double getOpacity(i) {
+    return opacityList[i % 10];
+  }
+}
+
+class TwinklingStarsScreen extends StatefulWidget {
+  const TwinklingStarsScreen({super.key});
+
+  @override
+  State<TwinklingStarsScreen> createState() => _TwinklingStarsScreenState();
+}
+
+class _TwinklingStarsScreenState extends State<TwinklingStarsScreen> {
+  List<Widget> stars = [];
+  Random random = Random();
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: stars,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 80; i++) {
+      stars.add(_buildStar());
+    }
+  }
+
+  Widget _buildStar() {
+    Size screensize = MediaQueryData.fromView(
+            WidgetsBinding.instance.platformDispatcher.views.single)
+        .size;
+    return Positioned(
+      top: random.nextDouble() * screensize.height,
+      left: random.nextDouble() * screensize.width,
+      child: Sparkler(
+        size: random.nextDouble() * 30 + 10, // Random size between 10 and 40
+      ),
+    );
+  }
+
+  void _updateStars() {
+    setState(() {
+      stars = List.generate(20, (index) => _buildStar());
+    });
+  }
+}
